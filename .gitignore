@@ -1,0 +1,34 @@
+# Node modules
+**/node_modules/
+
+# Build output
+**/.next/
+**/.nuxt/
+**/.strapi/
+**/dist/
+**/build/
+**/.turbo/
+
+# Environment files
+**/.env
+**/.env.* 
+
+# Logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/.pnpm-debug.log*
+
+# Editor/OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+**/.cache/
+**/.vscode/
+**/.idea/
+
+# Docker Compose files
+**/docker-compose*.yml
+**/docker-compose*.yaml

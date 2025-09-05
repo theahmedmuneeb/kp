@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_kp_wholesale_prices",
+  "info": {
+    "displayName": "Wholesale price"
+  },
+  "options": {},
+  "attributes": {
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "unique": false,
+      "min": 1
+    },
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 1
+    }
+  },
+  "config": {}
+}

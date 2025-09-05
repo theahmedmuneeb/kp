@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_kp_featured_2s",
+  "info": {
+    "displayName": "Featured 2"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "richtext",
+      "required": true
+    },
+    "variants": {
+      "type": "component",
+      "component": "kp.featured-variants",
+      "repeatable": true
+    },
+    "actionButton": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

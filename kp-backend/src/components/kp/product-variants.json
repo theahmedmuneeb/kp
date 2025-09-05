@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_kp_product_variants",
+  "info": {
+    "displayName": "Product variants"
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

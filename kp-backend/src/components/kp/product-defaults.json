@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_kp_product_defaults",
+  "info": {
+    "displayName": "Product defaults"
+  },
+  "options": {},
+  "attributes": {
+    "sizeChart": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "shippingInfo": {
+      "type": "text"
+    },
+    "washInstructions": {
+      "type": "text"
+    },
+    "fabricInfo": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

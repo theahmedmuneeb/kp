@@ -1,0 +1,29 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heroTitle": {
+      "type": "string",
+      "required": true
+    },
+    "heroDescription": {
+      "type": "string"
+    },
+    "featured": {
+      "type": "dynamiczone",
+      "components": [
+        "kp.featured-1",
+        "kp.featured-2"
+      ]
+    }
+  }
+}

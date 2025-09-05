@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_kp_text_lists",
+  "info": {
+    "displayName": "Text List"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "text",
+      "required": true
+    }
+  },
+  "config": {}
+}

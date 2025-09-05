@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_kp_product_sizes",
+  "info": {
+    "displayName": "Product sizes"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "customField",
+      "customField": "plugin::combobox.combobox",
+      "required": true,
+      "options": {
+        "defaultOptions": "S\nM\nL\nXL\n2XL\n3XL",
+        "customValidation": "/^.+$/"
+      }
+    },
+    "stock": {
+      "type": "integer",
+      "min": 0
+    },
+    "price": {
+      "type": "decimal",
+      "required": false,
+      "min": 1
+    },
+    "wholesale": {
+      "type": "component",
+      "component": "kp.wholesale-price",
+      "repeatable": true,
+      "required": false
+    }
+  },
+  "config": {}
+}

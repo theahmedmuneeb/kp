@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "policies",
+  "info": {
+    "singularName": "policy",
+    "pluralName": "policies",
+    "displayName": "Policy"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "policy": {
+      "type": "component",
+      "component": "kp.pilicy",
+      "repeatable": true,
+      "required": true,
+      "min": 1
+    }
+  }
+}

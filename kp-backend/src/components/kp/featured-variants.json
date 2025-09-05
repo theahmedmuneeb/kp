@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_kp_featured_variants",
+  "info": {
+    "displayName": "Image Links"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "href": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

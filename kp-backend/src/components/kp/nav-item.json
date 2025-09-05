@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_kp_nav_items",
+  "info": {
+    "displayName": "Link"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": false
+    },
+    "href": {
+      "type": "string",
+      "required": true
+    },
+    "blank": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    }
+  },
+  "config": {}
+}

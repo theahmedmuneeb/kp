@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_kp_featured_1s",
+  "info": {
+    "displayName": "Featured 1"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "features": {
+      "type": "component",
+      "component": "kp.text-list",
+      "repeatable": true
+    },
+    "infoButton": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": false,
+      "required": false
+    },
+    "variants": {
+      "type": "component",
+      "component": "kp.featured-variants",
+      "repeatable": true,
+      "required": false
+    },
+    "actionButton": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

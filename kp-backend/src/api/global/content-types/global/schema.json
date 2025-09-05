@@ -1,0 +1,64 @@
+{
+  "kind": "singleType",
+  "collectionName": "globals",
+  "info": {
+    "singularName": "global",
+    "pluralName": "globals",
+    "displayName": "Global"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "KP",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "navigation": {
+      "type": "dynamiczone",
+      "components": [
+        "kp.nav-item",
+        "kp.nav-menu"
+      ],
+      "required": true
+    },
+    "mobileNavigation": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": true,
+      "required": true
+    },
+    "headerButton": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": false,
+      "required": true
+    },
+    "footerLinks": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": true
+    },
+    "footerBrands": {
+      "type": "component",
+      "component": "kp.featured-variants",
+      "repeatable": true
+    },
+    "product": {
+      "type": "component",
+      "component": "kp.product-defaults",
+      "repeatable": false,
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_kp_nav_menus",
+  "info": {
+    "displayName": "Nav Menu"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "items": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}
