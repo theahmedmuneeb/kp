@@ -3,7 +3,7 @@ export default ({ env }) => ({
     config: {
       provider: "aws-s3",
       providerOptions: {
-        baseUrl: env('S3_PUBLIC_URL'),
+        baseUrl: env("S3_PUBLIC_URL"),
         s3Options: {
           endpoint: env("S3_ENDPOINT", ""),
           region: env("S3_REGION", "auto"),
@@ -14,9 +14,9 @@ export default ({ env }) => ({
           },
         },
         params: {
-          Bucket: env('S3_BUCKET'),
+          Bucket: env("S3_BUCKET"),
         },
-        endpoint: env('S3_ENDPOINT'),
+        endpoint: env("S3_ENDPOINT"),
         s3ForcePathStyle: true,
       },
       actionOptions: {
@@ -44,5 +44,23 @@ export default ({ env }) => ({
   },
   "webp-converter": {
     enabled: true,
-  }
+  },
+  email: {
+    config: {
+      provider: "nodemailer",
+      providerOptions: {
+        host: env("SMTP_HOST"),
+        port: env.int("SMTP_PORT", 465),
+        secure: true,
+        auth: {
+          user: env("SMTP_USERNAME"),
+          pass: env("SMTP_PASSWORD"),
+        },
+      },
+      settings: {
+        defaultFrom: env("SMTP_DEFAULT_FROM"),
+        defaultReplyTo: env("SMTP_DEFAULT_REPLY_TO"),
+      },
+    },
+  },
 });

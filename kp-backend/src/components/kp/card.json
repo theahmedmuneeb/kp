@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_kp_cards",
+  "info": {
+    "displayName": "Card"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "text",
+      "required": true
+    }
+  },
+  "config": {}
+}

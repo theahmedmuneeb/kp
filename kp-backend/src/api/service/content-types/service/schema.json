@@ -1,0 +1,46 @@
+{
+  "kind": "singleType",
+  "collectionName": "services",
+  "info": {
+    "singularName": "service",
+    "pluralName": "services",
+    "displayName": "Services"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "serviceSection1": {
+      "type": "component",
+      "component": "kp.services-section",
+      "repeatable": false,
+      "required": true
+    },
+    "serviceSection2": {
+      "type": "component",
+      "component": "kp.services-section",
+      "repeatable": false,
+      "required": true
+    },
+    "featuresHeading": {
+      "type": "string",
+      "required": true
+    },
+    "features": {
+      "type": "component",
+      "component": "kp.card",
+      "repeatable": true
+    },
+    "ctaHeading": {
+      "type": "string",
+      "required": true
+    },
+    "ctaButton": {
+      "type": "component",
+      "component": "kp.nav-item",
+      "repeatable": false,
+      "required": true
+    }
+  }
+}

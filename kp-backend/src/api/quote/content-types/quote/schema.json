@@ -1,0 +1,75 @@
+{
+  "kind": "collectionType",
+  "collectionName": "quotes",
+  "info": {
+    "singularName": "quote",
+    "pluralName": "quotes",
+    "displayName": "Quotes"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "required": true
+    },
+    "brand": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "required": true
+    },
+    "email": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 150,
+      "required": true,
+      "regex": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+    },
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "deadline": {
+      "type": "date"
+    },
+    "garment": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "required": true
+    },
+    "blank": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "required": true
+    },
+    "colors": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "required": true
+    },
+    "printLocation": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 100,
+      "required": true
+    },
+    "mockup": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    }
+  }
+}

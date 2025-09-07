@@ -4,29 +4,17 @@ import { CartItems } from "@/types/strapi";
 import { api } from "@/utils/api";
 import getWholesalePrice from "@/utils/get-wholesale-price";
 import { NextResponse } from "next/server";
+import { parse, z } from "zod";
 
-import {
-  array,
-  gtValue,
-  integer,
-  minLength,
-  number,
-  object,
-  pipe,
-  parse,
-  ltValue,
-} from "valibot";
-
-const cartSchema = pipe(
-  array(
-    object({
-      id: pipe(number(), integer(), gtValue(0)),
-      size: pipe(number(), integer(), gtValue(0)),
-      quantity: pipe(number(), integer(), gtValue(0), ltValue(10000)),
+const cartSchema = z
+  .array(
+    z.object({
+      id: z.number().int().gt(0),
+      size: z.number().int().gt(0),
+      quantity: z.number().int().gt(0).lt(10000),
     })
-  ),
-  minLength(1)
-);
+  )
+  .min(1);
 
 export const POST = async (req: Request) => {
   const body = (await req.json()) as CartItem[];

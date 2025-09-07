@@ -1,5 +1,16 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface KpCard extends Struct.ComponentSchema {
+  collectionName: 'components_kp_cards';
+  info: {
+    displayName: 'Card';
+  };
+  attributes: {
+    content: Schema.Attribute.Text & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface KpFeatured1 extends Struct.ComponentSchema {
   collectionName: 'components_kp_featured_1s';
   info: {
@@ -145,6 +156,37 @@ export interface KpProductVariants extends Struct.ComponentSchema {
   };
 }
 
+export interface KpServiceItem extends Struct.ComponentSchema {
+  collectionName: 'components_kp_service_items';
+  info: {
+    displayName: 'Service item';
+  };
+  attributes: {
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface KpServicesSection extends Struct.ComponentSchema {
+  collectionName: 'components_kp_services_sections';
+  info: {
+    displayName: 'Services section';
+  };
+  attributes: {
+    description: Schema.Attribute.Text;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    items: Schema.Attribute.Component<'kp.service-item', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
 export interface KpTextList extends Struct.ComponentSchema {
   collectionName: 'components_kp_text_lists';
   info: {
@@ -234,6 +276,7 @@ export interface SharedSeo extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'kp.card': KpCard;
       'kp.featured-1': KpFeatured1;
       'kp.featured-2': KpFeatured2;
       'kp.featured-variants': KpFeaturedVariants;
@@ -243,6 +286,8 @@ declare module '@strapi/strapi' {
       'kp.product-defaults': KpProductDefaults;
       'kp.product-sizes': KpProductSizes;
       'kp.product-variants': KpProductVariants;
+      'kp.service-item': KpServiceItem;
+      'kp.services-section': KpServicesSection;
       'kp.text-list': KpTextList;
       'kp.wholesale-price': KpWholesalePrice;
       'shared.open-graph': SharedOpenGraph;

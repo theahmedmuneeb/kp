@@ -121,6 +121,11 @@ export type ServiceItem = {
   image: Image;
 };
 
+export type Card = {
+  title: string;
+  content: string;
+}
+
 //================= Main Types =================
 
 export interface Globals extends Main {
@@ -170,5 +175,20 @@ export interface Policy extends Main {
 }
 
 export interface Services extends Main {
-  data: {};
+  data: {
+    serviceSection1: {
+      heading: string;
+      description: string;
+      items: ServiceItem[];
+    };
+    serviceSection2: {
+      heading: string;
+      description: string;
+      items: ServiceItem[];
+    };
+    featuresHeading: string;
+    features: Card[];
+    ctaHeading: string;
+    ctaButton: Link;
+  };
 }
