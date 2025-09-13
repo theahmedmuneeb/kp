@@ -126,6 +126,7 @@ export interface KpProductSizes extends Struct.ComponentSchema {
         number
       >;
     stock: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
           min: 0;

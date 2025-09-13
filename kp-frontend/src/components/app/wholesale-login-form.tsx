@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import { ChevronRight, Loader2Icon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type WholesaleLoginFormData = {
   email: string;
@@ -16,6 +17,8 @@ type WholesaleLoginFormData = {
 export default function WholesaleLoginForm() {
   const [submitting, setSubmitting] = React.useState(false);
   const { register, handleSubmit } = useForm<WholesaleLoginFormData>();
+
+  const router = useRouter();
 
   // Form Handlers
   const handleLogin = async (data: WholesaleLoginFormData) => {
@@ -29,6 +32,7 @@ export default function WholesaleLoginForm() {
 
     if (res?.ok && !res.error && res.status < 400) {
       toast.success("Login successful!");
+      router.push("/wholesale");
       return;
     }
 
@@ -54,18 +58,18 @@ export default function WholesaleLoginForm() {
   };
 
   return (
-    <div className="py-20">
+    <div className="px-5 lg:px-10 py-10 lg:py-20">
       <div className="flex flex-col gap-5 lg:gap-7 max-w-lg mx-auto">
-        <h1 className="text-4xl font-bold text-center uppercase">
+        <h1 className="text-3xl md:text-4xl lg:text-[40px] font-extrabold text-center uppercase">
           Wholesale Login
         </h1>
-        <span className="text-base font-semibold inline-block uppercase">
+        <span className="text-sm md:text-base font-semibold font-montserrat leading-5 inline-block uppercase">
           Brand Owners Get Wholesale Pricing on All Blank by KP Products. Sign
           Up Today. Its Fast and Free.
         </span>
         <form
           onSubmit={handleSubmit(handleLogin, handleInvalid)}
-          className="flex flex-col gap-6 relative"
+          className="flex flex-col gap-6 relative font-montserrat"
         >
           <div>
             <label
@@ -127,7 +131,7 @@ export default function WholesaleLoginForm() {
         </form>
         <Link
           href="/wholesale/register"
-          className="flex items-center gap-2 text-xl font-bold uppercase w-fit mx-auto mt-3"
+          className="flex items-center gap-2 text-xl font-bold font-montserrat uppercase w-fit mx-auto mt-3"
         >
           <span>Sign up</span> <ChevronRight strokeWidth={3} />
         </Link>

@@ -59,6 +59,7 @@ export const POST = async (req: Request) => {
         const productPrice = wholesale
           ? getWholesalePrice(wholesaleRange, item.quantity) ?? sizePrice
           : sizePrice;
+        const quantity = item.quantity > size.stock ? size.stock : item.quantity;
 
         return {
           id: product.id,
@@ -66,12 +67,12 @@ export const POST = async (req: Request) => {
           slug: product.slug,
           image: product.images[0].formats.thumbnail,
           price: productPrice,
-          quantity: item.quantity,
+          quantity: quantity,
           size: {
             id: size.id,
             title: size.title,
           },
-          total: productPrice * item.quantity,
+          total: productPrice * quantity,
         };
       }
     })

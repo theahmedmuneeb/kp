@@ -96,7 +96,7 @@ export const POST = async (req: Request) => {
           hash,
           fileName.split(".").pop() ? `.${fileName.split(".").pop()}` : "",
           mockupFile ? mockupFile.type : "",
-          mockupFile ? mockupFile.size : 0,
+          mockupFile ? mockupFile.size / 1024 : null,
           `${process.env.S3_PUBLIC_URL}/${fileName}`,
           "aws-s3",
           "/2",

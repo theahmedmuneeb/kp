@@ -12,13 +12,13 @@ type CartState = {
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number, size: number) => void;
   clearCart: () => void;
+  setCart: (items: CartItem[]) => void;
 };
 
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cart: [],
-
       addToCart: (item) =>
         set((state) => {
           const existing = state.cart.find(
@@ -41,6 +41,7 @@ export const useCartStore = create<CartState>()(
         })),
 
       clearCart: () => set({ cart: [] }),
+      setCart: (items) => set({ cart: items }),
     }),
     {
       name: "kp-cart",

@@ -93,7 +93,7 @@ export type ProductAdditionalOptions = Base & {
   fabricInfo: String | null;
 };
 
-type Main = {
+export type Main = {
   data: {};
   meta: {};
 };
@@ -124,7 +124,7 @@ export type ServiceItem = {
 export type Card = {
   title: string;
   content: string;
-}
+};
 
 //================= Main Types =================
 
@@ -148,6 +148,8 @@ export interface Globals extends Main {
       shippingInfo: String | null;
       fabricInfo: String | null;
     };
+    email: string;
+    instagram: string;
   };
 }
 

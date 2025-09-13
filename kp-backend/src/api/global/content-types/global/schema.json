@@ -59,6 +59,14 @@
       "component": "kp.product-defaults",
       "repeatable": false,
       "required": true
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "instagram": {
+      "type": "string",
+      "required": true
     }
   }
 }

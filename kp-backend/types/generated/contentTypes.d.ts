@@ -387,10 +387,12 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    email: Schema.Attribute.String & Schema.Attribute.Required;
     footerBrands: Schema.Attribute.Component<'kp.featured-variants', true>;
     footerLinks: Schema.Attribute.Component<'kp.nav-item', true>;
     headerButton: Schema.Attribute.Component<'kp.nav-item', false> &
       Schema.Attribute.Required;
+    instagram: Schema.Attribute.String & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

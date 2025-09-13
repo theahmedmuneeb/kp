@@ -1,8 +1,10 @@
 import QuoteForm from "@/components/app/quote-form";
+import { useGlobals } from "@/lib/fetch";
 import { Instagram } from "lucide-react";
 import React from "react";
 
-export default function Contact() {
+export default async function Contact() {
+  const globals = await useGlobals();
   return (
     <main className="flex flex-col lg:flex-row w-full uppercase">
       {/* Left Side */}
@@ -22,18 +24,18 @@ export default function Contact() {
             <p>Questions? Feel free to reach out</p>
             <a
               className="flex items-center w-fit"
-              href="https://www.instagram.com/mc.provisions"
+              href={`https://www.instagram.com/${globals.data.instagram}`}
               target="_blank"
             >
               <Instagram className="size-4.5 lg:size-5" />
-              @mc.provisions
+              @{globals.data.instagram}
             </a>
             <a
               className="flex items-center w-fit"
-              href="mailto:provisionsmcp@gmail.com"
+              href={`mailto:${globals.data.email}`}
               target="_blank"
             >
-              provisionsmcp@gmail.com
+              {globals.data.email}
             </a>
           </div>
         </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RiArrowLeftLine, RiShoppingCart2Line } from "@remixicon/react";
 import {
   Sheet,
@@ -32,6 +32,8 @@ import { useCartStore } from "@/store/cart";
 import { AnimatePresence, motion } from "framer-motion";
 import { CartContent } from "@/types/strapi";
 import { getCart } from "@/lib/fetch";
+import { toast } from "sonner";
+import isObjectsEqual from "fast-deep-equal";
 
 export default function CartHeader() {
   const router = useRouter();
@@ -40,23 +42,39 @@ export default function CartHeader() {
     cart,
     removeFromCart: zRemoveFromCart,
     clearCart: zClearCart,
+    setCart: zSetCart,
   } = useCartStore();
+
   const [cartHeaderOpen, setCartHeaderOpen] = useState(false);
   const [cartContent, setCartContent] = useState<CartContent | null>(null);
   const [cartLoading, setCartLoading] = useState(false);
 
-  const loadCart = async (nullable = true) => {
-    if (!nullable) {
-      const cartData = await getCart(cart);
-      if (cartData) {
-        setCartContent(cartData);
-      }
-      return;
-    }
-    setCartLoading(true);
+  const latestRequestId = useRef(0);
+
+  const loadCart = async (loading = true) => {
+    setCartLoading(loading && true);
+    const requestId = ++latestRequestId.current;
     const cartData = await getCart(cart);
+
+    if (requestId !== latestRequestId.current) return;
+
     setCartContent(cartData);
     setCartLoading(false);
+
+    if (cartData) {
+      const newCart = cartData.map((item) => ({
+        id: item.id,
+        size: item.size.id,
+        quantity: item.quantity,
+      }));
+
+      if (!isObjectsEqual(newCart, cart)) {
+        zSetCart(newCart);
+        toast.info(
+          "Your cart has been updated to reflect the latest changes in availability."
+        );
+      }
+    }
   };
 
   const handleRemoveFromCart = (id: number, size: number) => {
@@ -82,7 +100,9 @@ export default function CartHeader() {
         if (!cartHeaderOpen) {
           loadCart();
         } else {
-          setCartContent(null);
+          setTimeout(() => {
+            setCartContent(null);
+          }, 200);
         }
       }}
     >
