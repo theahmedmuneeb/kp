@@ -88,9 +88,16 @@ export interface KpOrderProduct extends Struct.ComponentSchema {
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMax<
         {
-          max: 1;
+          min: 1;
         },
         number
+      >;
+    size: Schema.Attribute.String &
+      Schema.Attribute.CustomField<
+        'plugin::combobox.combobox',
+        {
+          defaultOptions: 'S\nM\nL\nXL\n2XL\n3XL';
+        }
       >;
   };
 }

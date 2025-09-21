@@ -16,7 +16,11 @@ export const cartSchema = z.object({
         quantity: z.number().int().gt(0).lt(10000),
       })
     )
-    .min(1),
+    .min(1).refine(
+      (items) =>
+        new Set(items.map((i) => `${i.id}-${i.size}`)).size === items.length,
+      { message: "Product–size combination must be unique" }
+    ),
   intentId: z.string().optional()
 });
 

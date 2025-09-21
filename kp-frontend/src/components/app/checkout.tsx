@@ -91,6 +91,7 @@ export default function Checkout() {
             stripe={stripePromise}
             options={{
               clientSecret: intent?.clientSecret,
+              paymentMethodCreation: "manual",
               appearance: {
                 theme: "flat",
                 variables: {

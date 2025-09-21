@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useCartStore } from "@/store/cart";
 import axios from "axios";
 import { useCheckoutStore } from "@/store/checkout";
+import Stripe from "stripe";
 
 type Props = {
   loading: boolean;
@@ -48,8 +49,8 @@ type CheckoutForm = z.infer<typeof checkoutFormSchema>;
 export default function CheckoutForm({ loading }: Props) {
   const [submitting, setSubmitting] = useState(false);
 
-  const { cart, clearCart } = useCartStore();
-  const { intent } = useCheckoutStore();
+  const { cart, clearCart, setCart } = useCartStore();
+  const { intent: zIntent, setIntent } = useCheckoutStore();
 
   const {
     register,
@@ -71,34 +72,88 @@ export default function CheckoutForm({ loading }: Props) {
     setSubmitting(true);
     if (!stripe || !elements) return;
 
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      toast.error(submitError?.message || "An unexpected error occurred.");
+      setSubmitting(false);
+      return;
+    }
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      elements,
+      params: {
+        billing_details: {
+          name: data.name,
+          email: data.email,
+        },
+      },
+    });
+
+    if (error || !paymentMethod) {
+      toast.error(error?.message || "An unexpected error occurred.");
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const order = await axios.post("/api/checkout", {
         meta: data,
         cart,
-        intentId: intent?.id,
+        intentId: zIntent?.id,
+        method: paymentMethod.id,
       });
-  
-      const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/checkout/status`,
-        },
-        redirect: "if_required",
-      });
-  
-      if (error) {
-        toast.error(error.message || "An unexpected error occurred.");
-        setSubmitting(false);
-        return;
-      } else if (paymentIntent.status === "succeeded") {
+
+      const intent: Stripe.Response<Stripe.PaymentIntent> = order.data.intent;
+
+      if (intent.status === "succeeded") {
         toast.success("Payment successful! Redirecting...");
         clearCart();
-        window.location.href = `/checkout/status?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}`;
+        window.location.href = `/checkout/status?payment_intent=${intent.id}&payment_intent_client_secret=${intent.client_secret}`;
+        return;
       }
-    } catch (_) {
-      toast.error("Failed to process checkout. Please try again.");
+
+      if (intent.status === "requires_action") {
+        const { error: nextActionError, paymentIntent } =
+          await stripe.handleNextAction({
+            clientSecret: intent.client_secret || "",
+          });
+
+        if (nextActionError || !paymentIntent) {
+          toast.error(
+            nextActionError?.message || "An unexpected error occurred."
+          );
+          setSubmitting(false);
+          return;
+        }
+
+        if (paymentIntent.status === "succeeded") {
+          toast.success("Payment successful! Redirecting...");
+          clearCart();
+          window.location.href = `/checkout/status?payment_intent=${paymentIntent.id}&payment_intent_client_secret=${paymentIntent.client_secret}`;
+          return;
+        }
+      }
+
+      if (intent.status === "requires_payment_method") {
+        toast.error("Payment failed. Please try another method.");
+        setSubmitting(false);
+        return;
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 409) {
+        setCart(err.response.data.cart);
+        setIntent(err.response.data.intent);
+        toast.info(
+          "Cart has been updated due to changes in product availability. Please try again."
+        );
+      } else {
+        toast.error("Failed to create order. Please refresh or try again.");
+      }
       setSubmitting(false);
+      return;
     }
+
+    setSubmitting(false);
   };
 
   const handleCheckoutSubmitError = (err: FieldErrors<CheckoutForm>) => {
