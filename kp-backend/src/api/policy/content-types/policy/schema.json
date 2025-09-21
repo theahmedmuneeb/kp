@@ -17,6 +17,12 @@
       "repeatable": true,
       "required": true,
       "min": 1
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
     }
   }
 }

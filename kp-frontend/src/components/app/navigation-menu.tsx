@@ -150,7 +150,10 @@ export function MobileNavigationMenu({ globals }: { globals: Globals }) {
       onOpenChange={setMobileNavigationMenuOpen}
     >
       <PopoverTrigger asChild>
-        <button className="flex items-center justify-center cursor-pointer lg:hidden">
+        <button
+          className="flex items-center justify-center cursor-pointer lg:hidden"
+          aria-label={!mobileNavigationMenuOpen ? "Open Menu" : "Close Menu"}
+        >
           <AnimatePresence mode="wait" initial={false}>
             {!mobileNavigationMenuOpen ? (
               <motion.span

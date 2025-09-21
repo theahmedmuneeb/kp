@@ -11,24 +11,31 @@ import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 import { api } from "@/utils/api";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { meta } from "@/lib/meta";
+import { Metadata } from "next";
+
+export const revalidate = false;
+
+async function fetchServices(): Promise<ServicesType> {
+  const { success, data: servicesPage } = await api.get<ServicesType>(
+    "/service?populate=serviceSection1.items.image&populate=serviceSection2.items.image&populate=features&populate=ctaButton&populate=seo.openGraph"
+  );
+  if (!success || !servicesPage.data) {
+    throw new Error("Failed to fetch services page");
+  }
+  return servicesPage;
+}
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  const servicesPage = await fetchServices();
+  return meta(servicesPage.data.seo, "services");
+};
 
 export default async function Services() {
-  const { success, data } = await api.get<ServicesType>(
-    "/service?populate=serviceSection1.items.image&populate=serviceSection2.items.image&populate=features&populate=ctaButton"
-  );
-
-  if (!success || !data.data)
-    throw new Error("Failed to fetch services page data");
-
-  const page = data.data;
+  const page = (await fetchServices()).data;
 
   return (
     <main className="uppercase pt-10">

@@ -58,17 +58,17 @@ export default function CartHeader() {
 
     if (requestId !== latestRequestId.current) return;
 
-    setCartContent(cartData);
+    setCartContent(cartData.cart);
     setCartLoading(false);
 
     if (cartData) {
-      const newCart = cartData.map((item) => ({
+      const newCart = cartData.cart?.map((item) => ({
         id: item.id,
         size: item.size.id,
         quantity: item.quantity,
       }));
 
-      if (!isObjectsEqual(newCart, cart)) {
+      if (newCart && !isObjectsEqual(newCart, cart)) {
         zSetCart(newCart);
         toast.info(
           "Your cart has been updated to reflect the latest changes in availability."
@@ -109,6 +109,7 @@ export default function CartHeader() {
       <SheetTrigger
         className="cursor-pointer"
         disabled={mobileNavigationMenuOpen}
+        aria-label="Open Cart"
       >
         <RiShoppingCart2Line className="size-9 text-secondary" />
       </SheetTrigger>
@@ -118,7 +119,7 @@ export default function CartHeader() {
         className="bg-background w-full [&>button:first-of-type]:hidden gap-0"
       >
         <SheetHeader className="flex flex-row items-center text-xl">
-          <SheetClose className="cursor-pointer">
+          <SheetClose className="cursor-pointer" aria-label="Close Cart">
             <RiArrowLeftLine />
           </SheetClose>
           <SheetTitle className="flex-grow text-secondary font-montserrat text-center">

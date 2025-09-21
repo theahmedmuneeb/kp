@@ -2,6 +2,18 @@ import { useGlobals } from "@/lib/fetch";
 import Link from "next/link";
 import React from "react";
 import CheckoutComponent  from "@/components/app/checkout";
+import { Metadata } from "next";
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  const globals = await useGlobals();
+  return {
+    title: `Checkout | ${globals.data.title}`,
+    robots: {
+      index: false,
+      follow: false,
+    }
+  };
+}
 
 export default async function Checkout() {
   const globals = await useGlobals();

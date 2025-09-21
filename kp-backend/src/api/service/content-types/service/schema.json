@@ -41,6 +41,12 @@
       "component": "kp.nav-item",
       "repeatable": false,
       "required": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
     }
   }
 }

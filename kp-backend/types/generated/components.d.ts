@@ -77,6 +77,24 @@ export interface KpNavMenu extends Struct.ComponentSchema {
   };
 }
 
+export interface KpOrderProduct extends Struct.ComponentSchema {
+  collectionName: 'components_kp_order_products';
+  info: {
+    displayName: 'Order Product';
+  };
+  attributes: {
+    product: Schema.Attribute.Relation<'oneToOne', 'api::product.product'>;
+    quantity: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+        },
+        number
+      >;
+  };
+}
+
 export interface KpPilicy extends Struct.ComponentSchema {
   collectionName: 'components_kp_pilicies';
   info: {
@@ -283,6 +301,7 @@ declare module '@strapi/strapi' {
       'kp.featured-variants': KpFeaturedVariants;
       'kp.nav-item': KpNavItem;
       'kp.nav-menu': KpNavMenu;
+      'kp.order-product': KpOrderProduct;
       'kp.pilicy': KpPilicy;
       'kp.product-defaults': KpProductDefaults;
       'kp.product-sizes': KpProductSizes;

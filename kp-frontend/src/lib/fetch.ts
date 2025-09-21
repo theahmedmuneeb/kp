@@ -31,12 +31,20 @@ export const getUser = async (): Promise<User | null> => {
   return null;
 };
 
-export const getCart = async (raw: CartItem[]): Promise<CartContent | null> => {
-  if (!raw || raw.length === 0) return [];
+export const getCart = async (raw: CartItem[], intentId?: string): Promise<{ cart: CartContent | null, intent: Intent }> => {
+  if (!raw || raw.length === 0) return { cart: [], intent: undefined };
   try {
-    const res = await axios.post<CartContent>("/api/cart", raw);
-    return res.data || null;
+    const res = await axios.post<{ cart: CartContent | null, intent: Intent }>("/api/cart", {
+      cart: raw,
+      intentId
+    });
+    return { cart: res.data.cart, intent: res.data.intent || undefined };
   } catch (_) {
-    return null;
+    return { cart: null, intent: undefined };
   }
 };
+
+export type Intent = {
+  id: string;
+  clientSecret: string | undefined;
+} | undefined;

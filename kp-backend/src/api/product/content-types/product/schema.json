@@ -64,6 +64,12 @@
       "type": "uid",
       "targetField": "title",
       "required": false
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
     }
   }
 }

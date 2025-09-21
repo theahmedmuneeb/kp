@@ -79,6 +79,7 @@ export type Product = ProductBase & {
   variants: ProductBase[];
   wholesale: ProductWholesalePrice[];
   additional: ProductAdditionalOptions;
+  seo: Seo;
 };
 
 export type ProductWholesalePrice = Component & {
@@ -97,6 +98,23 @@ export type Main = {
   data: {};
   meta: {};
 };
+
+export type Seo = {
+  metaTitle: string;
+  metaDescription: string;
+  metaImage: Image | null;
+  openGraph: {
+    ogTitle: string;
+    ogDescription: string;
+    ogImage: Image | null;
+    ogURL?: string | null;
+    ogType: string | null;
+  } | null;
+  keywords: string | null;
+  metaRobots: string | null;
+  canonicalURL: string | null;
+  structuredData: any;
+}
 
 export type CartContent = ({
   image: Image;
@@ -135,9 +153,9 @@ export interface Globals extends Main {
     navigation: Array<
       | Link
       | {
-          title: string;
-          items: Link[];
-        }
+        title: string;
+        items: Link[];
+      }
     >;
     mobileNavigation: Link[];
     headerButton: Link;
@@ -155,7 +173,13 @@ export interface Globals extends Main {
 
 export interface Homepage extends Main {
   data: {
+    heroTitle: string;
+    heroDescription: string;
+    heroBgImage: Image;
+    heroBgImageDesktop?: Image;
+    testimonials: Card[] | null;
     featured: Array<FeaturedComponent1 | FeaturedComponent2>;
+    seo: Seo
   };
 }
 
@@ -173,6 +197,7 @@ export interface Policy extends Main {
         }
       >;
     }[];
+    seo: Seo;
   };
 }
 
@@ -192,5 +217,34 @@ export interface Services extends Main {
     features: Card[];
     ctaHeading: string;
     ctaButton: Link;
+    seo: Seo;
+  };
+}
+
+export interface WholesalePage extends Main {
+  data: {
+    heading: string;
+    description: string | null;
+    seo: Seo;
+  };
+}
+
+export interface QuotePage extends Main {
+  data: {
+    heading: string;
+    content: string | null;
+    showContactInfo: boolean;
+    seo: Seo;
+  };
+}
+
+export interface AboutUs extends Main {
+  data: {
+    heading: string;
+    content: string | null;
+    showContactInfo: boolean;
+    image: Image;
+    textUnderImage: string | null;
+    seo: Seo;
   };
 }

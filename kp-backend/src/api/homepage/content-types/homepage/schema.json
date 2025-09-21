@@ -16,7 +16,27 @@
       "required": true
     },
     "heroDescription": {
-      "type": "string"
+      "type": "text"
+    },
+    "heroBgImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "heroBgImageDesktop": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "testimonials": {
+      "type": "component",
+      "component": "kp.card",
+      "repeatable": true
     },
     "featured": {
       "type": "dynamiczone",
@@ -24,6 +44,12 @@
         "kp.featured-1",
         "kp.featured-2"
       ]
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
     }
   }
 }

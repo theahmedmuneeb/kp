@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Separator } from "../ui/separator";
-import { useForm } from "react-hook-form";
 import { useCartStore } from "@/store/cart";
 import { useRouter } from "next/navigation";
 import { CartContent } from "@/types/strapi";
@@ -11,8 +10,11 @@ import { Skeleton } from "../ui/skeleton";
 import { AspectRatio } from "../ui/aspect-ratio";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
-import CountrySelect from "../ui/country-select";
-import RegionSelect from "../ui/region-select";
+import { useCheckoutStore } from "@/store/checkout";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "./checkout-form";
+import isObjectsEqual from "fast-deep-equal";
 
 type CheckoutForm = {
   email: string;
@@ -26,36 +28,46 @@ type CheckoutForm = {
 
 export default function Checkout() {
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [cartContent, setCartContent] = useState<CartContent>([]);
 
   const firstRender = useRef(true);
 
-  const { cart } = useCartStore();
+  const { cart, setCart } = useCartStore();
+  const { intent, setIntent } = useCheckoutStore();
 
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    watch,
-    setError,
-    formState: { errors },
-  } = useForm<CheckoutForm>({
-    // resolver: zodResolver(QuoteFormSchema),
-  });
+  const stripePromise = loadStripe(
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+  );
 
   const loadCart = async () => {
     setLoading(true);
-    const cartData = await getCart(cart);
-    if (!cartData || !Array.isArray(cartData)) {
+    const cartData = await getCart(cart, intent?.id || "");
+    if (!cartData.cart || !Array.isArray(cartData.cart)) {
       toast.error("Something went wrong. Please try again.");
       router.replace("/");
       return;
     }
-    setCartContent(cartData);
+
+    setCartContent(cartData.cart);
+    setIntent(cartData.intent);
+
+    // Sync cart if there are any changes
+    if (cartData.cart) {
+      const newCart = cartData.cart?.map((item) => ({
+        id: item.id,
+        size: item.size.id,
+        quantity: item.quantity,
+      }));
+
+      if (newCart && !isObjectsEqual(newCart, cart)) {
+        setCart(newCart);
+        toast.info(
+          "Your cart has been updated to reflect the latest changes in availability."
+        );
+      }
+    }
     setLoading(false);
   };
 
@@ -74,111 +86,73 @@ export default function Checkout() {
   return (
     <>
       <div className="basis-[55%]">
-        <form
-          className={`flex flex-col gap-3 font-montserrat px-4 md:px-5 lg:px-8 py-6 ${
-            loading || submitting ? "pointer-events-none" : ""
-          }`}
-        >
-          {/* name */}
-          <div className="flex flex-col gap-0.5">
-            <label className="font-semibold" htmlFor="name">
-              Name:
-            </label>
-            <input
-              {...register("name")}
-              type="text"
-              id="name"
-              placeholder="Full Name"
-              disabled={loading || submitting}
-              className="p-2 outline-0 border-3 border-primary placeholder:text-gray-500 font-semibold w-full"
-            />
-          </div>
-          {/* Email */}
-          <div className="flex flex-col gap-0.5">
-            <label className="font-semibold" htmlFor="email">
-              Email:
-            </label>
-            <input
-              {...register("email")}
-              type="text"
-              id="email"
-              placeholder="Email Address"
-              disabled={loading || submitting}
-              className="p-2 outline-0 border-3 border-primary placeholder:text-gray-500 font-semibold w-full"
-            />
-          </div>
-          {/* Location */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {/* Country */}
-            <div className="flex flex-col gap-0.5">
-              <label className="font-semibold" htmlFor="country">
-                Country:
-              </label>
-              <CountrySelect
-                onChange={(value) => {
-                  setValue("country", value);
-                }}
-                className="w-full !h-12 focus-visible:ring-0 border-3 border-primary focus-visible:border-primary cursor-pointer font-semibold"
-              />
-            </div>
-            {/* State */}
-            <div className="flex flex-col gap-0.5">
-              <label className="font-semibold" htmlFor="state">
-                State/Province:
-              </label>
-              <RegionSelect
-                countryCode={watch("country")}
-                onChange={(value) => {
-                  setValue("state", value);
-                }}
-                className="w-full !h-12 focus-visible:ring-0 border-3 border-primary focus-visible:border-primary cursor-pointer font-semibold"
-              />
-            </div>
-            {/* City */}
-            <div className="flex flex-col gap-0.5">
-              <label className="font-semibold" htmlFor="city">
-                City:
-              </label>
-              <input
-                {...register("city")}
-                type="text"
-                id="city"
-                placeholder="City"
-                disabled={loading || submitting}
-                className="p-2 outline-0 border-3 border-primary font-semibold placeholder:text-gray-500 w-full"
-              />
-            </div>
-            {/* Zip code */}
-            <div className="flex flex-col gap-0.5">
-              <label className="font-semibold" htmlFor="zip">
-                ZIP/Postal Code:
-              </label>
-              <input
-                {...register("zip")}
-                type="text"
-                id="zip"
-                placeholder="ZIP Code"
-                disabled={loading || submitting}
-                className="p-2 outline-0 border-3 border-primary font-semibold placeholder:text-gray-500 w-full"
-              />
-            </div>
-            {/* Address */}
-            <div className="flex flex-col gap-0.5 col-span-1 md:col-span-2">
-              <label className="font-semibold" htmlFor="address">
-                Address:
-              </label>
-              <input
-                {...register("address")}
-                type="text"
-                id="address"
-                placeholder="Street Address"
-                disabled={loading || submitting}
-                className="p-2 outline-0 border-3 border-primary font-semibold placeholder:text-gray-500 w-full"
-              />
-            </div>
-          </div>
-          <h2 className="text-xl lg:text-2xl font-semibold font-inter">Payment</h2>
-        </form>
+        {intent && !loading ? (
+          <Elements
+            stripe={stripePromise}
+            options={{
+              clientSecret: intent?.clientSecret,
+              appearance: {
+                theme: "flat",
+                variables: {
+                  borderRadius: "0px",
+                  colorPrimary: "#6A341A",
+                  colorBackground: "#E4E4E4",
+                  colorDanger: "#e7000b",
+                  fontFamily: '"Montserrat", sans-serif',
+                },
+                rules: {
+                  ".Block": {
+                    color: "#000000",
+                    backgroundColor: "#E4E4E4",
+                    boxShadow: "none",
+                  },
+                  ".AccordionItem": {
+                    backgroundColor: "#E4E4E4",
+                    fontSize: "18px",
+                    color: "#6A341A !important",
+                    paddingLeft: "0",
+                    paddingRight: "0",
+                  },
+                  ".Input": {
+                    boxShadow: "none",
+                    border: "3px solid #F2763A",
+                    fontWeight: "600",
+                    color: "#6A341A",
+                    padding: "12px",
+                  },
+                  ".Input::placeholder": {
+                    color: "#6a7282",
+                  },
+                  ".Input:focus": {
+                    borderColor: "#F2763A",
+                    boxShadow: "none",
+                  },
+                  ".Input--invalid": {
+                    borderColor: "#e7000b",
+                    boxShadow: "none",
+                    outline: "none",
+                  },
+                  ".Label": {
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#6A341A",
+                    marginBottom: "4px",
+                  },
+                },
+              },
+              fonts: [
+                {
+                  cssSrc:
+                    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap",
+                },
+              ],
+            }}
+          >
+            <CheckoutForm loading={loading} />
+          </Elements>
+        ) : (
+          <>Loading...</>
+        )}
       </div>
       <Separator orientation="vertical" className="!w-0.5 bg-primary !h-auto" />
       <div className="basis-[45%]">

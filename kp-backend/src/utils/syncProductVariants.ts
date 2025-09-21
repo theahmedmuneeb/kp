@@ -1,9 +1,15 @@
 import type { Core } from "@strapi/strapi";
 
+function isNumberArraysEqual(a: number[], b: number[]) {
+  if (a.length !== b.length) return false;
+  return a.every((val, i) => val === b[i]);
+}
+
 export async function syncProductVariants(
   strapi: Core.Strapi,
   result: any,
-  syncedProducts: Set<number>
+  oldProduct: any | null = null,
+  syncedProducts: Set<number>,
 ) {
   const product = await strapi.db.query("api::product.product").findOne({
     where: { id: result.id },
@@ -13,6 +19,14 @@ export async function syncProductVariants(
   const variantIds = Array.isArray(product.variants)
     ? product.variants.map((v: any) => v.id)
     : [];
+
+  if (oldProduct && Array.isArray(oldProduct.variants)) {
+    const oldVariantIds = oldProduct.variants.map((v: any) => v.id);
+
+    if (isNumberArraysEqual(variantIds, oldVariantIds)) {
+      return;
+    }
+  }
 
   const ids = [result.id, ...variantIds] as number[];
 

@@ -3,6 +3,12 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 
+export const metadata = {
+  title: "Page Not Found",
+  description:
+    "We couldn't find the page you're looking for. It might have been moved or doesn't exist.",
+};
+
 export default function NotFound() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center gap-y-6 text-center text-foreground bg-background p-4">
@@ -19,12 +25,12 @@ export default function NotFound() {
           404 <span className="text-3xl font-semibold">Page Not Found</span>
         </h1>
       </div>
-      <p className="max-w-prose text-xl text-muted-foreground">
+      <p className="max-w-prose text-xl text-muted-foreground font-montserrat">
         We couldn&apos;t find the page you&apos;re looking for. It might have
         been moved or doesn&apos;t exist.
       </p>
-      <Button className="text-secondary uppercase text-xl font-semibold h-10" size="lg" asChild>
-        <Link href="/">Home Page</Link>
+      <Button className="text-secondary font-extrabold uppercase text-xl h-10" size="lg" asChild>
+        <Link href="/">Homepage</Link>
       </Button>
     </div>
   )

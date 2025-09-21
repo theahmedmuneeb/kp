@@ -1,21 +1,38 @@
+import { meta } from "@/lib/meta";
 import { Policy } from "@/types/strapi";
 import { api } from "@/utils/api";
+import { Metadata } from "next";
 import React from "react";
 
-export default async function Services() {
-  const { success, data: res } = await api.get<Policy>(
-    "/policy?populate=policy.items"
+export const revalidate = false;
+
+async function fetchPolicy(): Promise<Policy> {
+  const { success, data: policyPage } = await api.get<Policy>(
+    "/policy?populate=policy.items&populate=seo.openGraph"
   );
 
-  if (!success || !res || !res.data)
-    throw new Error("Failed to fetch policy page");
+  if (!success || !policyPage) {
+    throw new Error("Failed to get policies");
+  }
+  return policyPage;
+}
 
-  const policies = res.data.policy;
+export const generateMetadata = async (): Promise<Metadata> => {
+  const policyPage = await fetchPolicy();
+  return meta(policyPage.data.seo, "policy");
+};
+
+export default async function Services() {
+  const policies = (await fetchPolicy()).data.policy;
 
   return (
     <main className="flex flex-col gap-6 lg:gap-8 xl:gap-12 px-4 lg:px-10 xl:px-20 pt-6 pb-12 lg:py-20 xl:py-28 uppercase max-w-7xl mx-auto">
       {policies.map((policy, idx) => (
-        <div key={idx} className="flex flex-col gap-5 lg:gap-8 xl:gap-12">
+        <div
+          key={idx}
+          id={`policy-${idx + 1}`}
+          className="flex flex-col gap-5 lg:gap-8 xl:gap-12"
+        >
           <h1 className="text-2xl md:text-3xl lg:text-[40px] leading-6.5 md:leading-8.5 lg:leading-none font-extrabold">
             {policy.title}
           </h1>
@@ -38,7 +55,8 @@ export default async function Services() {
                   )
                   .map((item, idx) => (
                     <div key={idx}>
-                      {Math.floor(policy.items.length / 2) + idx + 1}.{item.text}
+                      {Math.floor(policy.items.length / 2) + idx + 1}.
+                      {item.text}
                     </div>
                   ))}
               </div>

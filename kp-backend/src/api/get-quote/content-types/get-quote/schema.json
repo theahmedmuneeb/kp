@@ -1,0 +1,33 @@
+{
+  "kind": "singleType",
+  "collectionName": "get_quotes",
+  "info": {
+    "singularName": "get-quote",
+    "pluralName": "get-quotes",
+    "displayName": "Get Quote"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "text"
+    },
+    "showContactInfo": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
+    }
+  }
+}

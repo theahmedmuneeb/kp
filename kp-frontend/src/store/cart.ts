@@ -9,6 +9,7 @@ export type CartItem = {
 
 type CartState = {
   cart: CartItem[];
+
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number, size: number) => void;
   clearCart: () => void;
@@ -50,16 +51,18 @@ export const useCartStore = create<CartState>()(
 );
 
 if (typeof window !== "undefined") {
-  window.addEventListener("storage", (event) => {
-    if (event.key === "kp-cart" && event.newValue) {
+  let prev = localStorage.getItem("kp-cart");
+
+  const sync = (val: string | null) => {
+    if (val && val !== prev) {
+      prev = val;
       try {
-        const parsed = JSON.parse(event.newValue);
-        if (parsed?.state) {
-          useCartStore.setState(parsed.state);
-        }
-      } catch (err) {
-        console.error("Failed to sync cart across tabs:", err);
-      }
+        const parsed = JSON.parse(val);
+        if (parsed?.state) useCartStore.setState(parsed.state);
+      } catch { }
     }
-  });
+  };
+
+  window.addEventListener("storage", (e) => e.key === "kp-cart" && sync(e.newValue));
+  setInterval(() => sync(localStorage.getItem("kp-cart")), 1000);
 }

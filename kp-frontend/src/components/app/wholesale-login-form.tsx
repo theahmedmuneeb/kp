@@ -8,13 +8,14 @@ import { signIn } from "next-auth/react";
 import { ChevronRight, Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { WholesalePage } from "@/types/strapi";
 
 type WholesaleLoginFormData = {
   email: string;
   password: string;
 };
 
-export default function WholesaleLoginForm() {
+export default function WholesaleLoginForm({ page }: { page: WholesalePage }) {
   const [submitting, setSubmitting] = React.useState(false);
   const { register, handleSubmit } = useForm<WholesaleLoginFormData>();
 
@@ -61,11 +62,10 @@ export default function WholesaleLoginForm() {
     <div className="px-5 lg:px-10 py-10 lg:py-20">
       <div className="flex flex-col gap-5 lg:gap-7 max-w-lg mx-auto">
         <h1 className="text-3xl md:text-4xl lg:text-[40px] font-extrabold text-center uppercase">
-          Wholesale Login
+          {page.data.heading}
         </h1>
         <span className="text-sm md:text-base font-semibold font-montserrat leading-5 inline-block uppercase">
-          Brand Owners Get Wholesale Pricing on All Blank by KP Products. Sign
-          Up Today. Its Fast and Free.
+          {page.data.description}
         </span>
         <form
           onSubmit={handleSubmit(handleLogin, handleInvalid)}
