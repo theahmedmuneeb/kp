@@ -592,6 +592,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     orderStatus: Schema.Attribute.Enumeration<
       [
         'pending',
+        'received',
         'processing',
         'shipped',
         'completed',
@@ -684,7 +685,14 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
       Schema.Attribute.Required;
-    sizes: Schema.Attribute.Component<'kp.product-sizes', true>;
+    sizes: Schema.Attribute.Component<'kp.product-sizes', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
     slug: Schema.Attribute.UID<'title'>;
     title: Schema.Attribute.String &
       Schema.Attribute.Required &

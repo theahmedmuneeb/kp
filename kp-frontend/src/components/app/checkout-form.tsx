@@ -17,10 +17,13 @@ import { useCartStore } from "@/store/cart";
 import axios from "axios";
 import { useCheckoutStore } from "@/store/checkout";
 import Stripe from "stripe";
+import { CartContent } from "@/types/strapi";
+import { OrderSummary } from "./checkout";
 
 type Props = {
   loading: boolean;
-  // setLoading: (loading: boolean) => void;
+  cartContent: CartContent;
+  deliveryCharges: number;
 };
 
 export const checkoutFormSchema = z.object({
@@ -46,7 +49,11 @@ export const checkoutFormSchema = z.object({
 
 type CheckoutForm = z.infer<typeof checkoutFormSchema>;
 
-export default function CheckoutForm({ loading }: Props) {
+export default function CheckoutForm({
+  loading,
+  cartContent,
+  deliveryCharges,
+}: Props) {
   const [submitting, setSubmitting] = useState(false);
 
   const { cart, clearCart, setCart } = useCartStore();
@@ -108,6 +115,7 @@ export default function CheckoutForm({ loading }: Props) {
       if (intent.status === "succeeded") {
         toast.success("Payment successful! Redirecting...");
         clearCart();
+        setIntent(null);
         window.location.href = `/checkout/status?payment_intent=${intent.id}&payment_intent_client_secret=${intent.client_secret}`;
         return;
       }
@@ -166,8 +174,8 @@ export default function CheckoutForm({ loading }: Props) {
     <form
       onSubmit={handleSubmit(handleCheckoutSubmit, handleCheckoutSubmitError)}
       className={`flex flex-col gap-3 font-montserrat px-4 md:px-5 lg:px-8 py-6 ${
-        loading || submitting ? "pointer-events-none opacity-40" : ""
-      }`}
+        submitting ? "pointer-events-none opacity-40" : ""
+      } ${loading ? "hidden" : ""}`}
     >
       {/* name */}
       <div className="flex flex-col gap-0.5">
@@ -272,7 +280,12 @@ export default function CheckoutForm({ loading }: Props) {
       <h2 className="text-xl lg:text-2xl font-semibold font-inter mt-2">
         Payment
       </h2>
-      <PaymentElement />
+      {!loading && <PaymentElement />}
+      <OrderSummary
+        cartContent={cartContent}
+        deliveryCharges={deliveryCharges}
+        className="flex lg:hidden px-0"
+      />
       <Button type="submit" disabled={loading || submitting} className="mt-4">
         <RiLock2Fill className="stroke-3 mr-1 size-5" />
         {submitting ? "Processing..." : "Checkout"}

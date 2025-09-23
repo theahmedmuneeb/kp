@@ -73,6 +73,7 @@
       "default": "pending",
       "enum": [
         "pending",
+        "received",
         "processing",
         "shipped",
         "completed",

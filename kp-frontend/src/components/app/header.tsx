@@ -39,7 +39,7 @@ export default async function Header() {
                   : undefined
               }
             >
-              <Button className="text-xl !font-extrabold">
+              <Button className="text-xl !font-extrabold uppercase">
                 {globals.data.headerButton.title}
               </Button>
             </Link>

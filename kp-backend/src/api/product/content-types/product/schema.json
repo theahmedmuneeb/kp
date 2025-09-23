@@ -47,7 +47,9 @@
     "sizes": {
       "type": "component",
       "component": "kp.product-sizes",
-      "repeatable": true
+      "repeatable": true,
+      "required": true,
+      "min": 1
     },
     "variants": {
       "type": "relation",

@@ -10,6 +10,11 @@
       "relation": "oneToOne",
       "target": "api::product.product"
     },
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
     "size": {
       "type": "customField",
       "customField": "plugin::combobox.combobox",
@@ -17,10 +22,11 @@
         "defaultOptions": "S\nM\nL\nXL\n2XL\n3XL"
       }
     },
-    "quantity": {
+    "sizeId": {
       "type": "integer",
       "required": true,
-      "min": 1
+      "unique": false,
+      "min": 0
     }
   },
   "config": {}

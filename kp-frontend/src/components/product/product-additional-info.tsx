@@ -116,7 +116,7 @@ export default async function ProductAdditionalInfo({
       <Separator className="!h-1 bg-secondary" />
       {product.description && (
         <div
-          className="text-xl lg:text-2xl font-montserrat font-semibold mt-2"
+          className="text-xl lg:text-2xl leading-5.5 lg:leading-7 font-montserrat font-semibold mt-2"
           dangerouslySetInnerHTML={{
             __html: marked(product.description, { breaks: true }),
           }}

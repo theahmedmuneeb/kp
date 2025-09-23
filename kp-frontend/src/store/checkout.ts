@@ -5,7 +5,7 @@ type CheckoutStore = {
     id: string;
     clientSecret: string | undefined;
   } | null;
-  setIntent: (intent: { id: string; clientSecret: string | undefined } | undefined) => void;
+  setIntent: (intent: { id: string; clientSecret: string | undefined } | null) => void;
 };
 
 export const useCheckoutStore = create<CheckoutStore>((set) => ({

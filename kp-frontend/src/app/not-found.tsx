@@ -3,11 +3,11 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 
-export const metadata = {
-  title: "Page Not Found",
-  description:
-    "We couldn't find the page you're looking for. It might have been moved or doesn't exist.",
-};
+// export const metadata = {
+//   title: "Page Not Found",
+//   description:
+//     "We couldn't find the page you're looking for. It might have been moved or doesn't exist.",
+// };
 
 export default function NotFound() {
   return (

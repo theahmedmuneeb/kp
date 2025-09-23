@@ -2,12 +2,12 @@ import React from "react";
 import Header from "@/components/app/header";
 import Footer from "@/components/app/footer";
 import { Product as ProductType, ProductPage } from "@/types/strapi";
-import { api, ApiResponse } from "@/utils/api";
+import { api } from "@/utils/api";
 import { notFound } from "next/navigation";
 import ProductMeidaGallery from "@/components/product/product-media-gallery";
 import ProductInfo from "@/components/product/product-info";
 import { unstable_cache } from "next/cache";
-import { Metadata, Viewport } from "next";
+import { Metadata } from "next";
 
 // Fetch product
 async function fetchProduct(slug: string): Promise<ProductType | null> {
@@ -25,7 +25,7 @@ async function fetchProduct(slug: string): Promise<ProductType | null> {
 // Cached product
 const getProduct = (slug: string) => {
   return unstable_cache(() => fetchProduct(slug), ["product", slug], {
-    revalidate: 60,
+    revalidate: 30,
   });
 };
 

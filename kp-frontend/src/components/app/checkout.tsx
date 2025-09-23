@@ -15,6 +15,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./checkout-form";
 import isObjectsEqual from "fast-deep-equal";
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type CheckoutForm = {
   email: string;
@@ -29,6 +31,7 @@ type CheckoutForm = {
 export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const [cartContent, setCartContent] = useState<CartContent>([]);
+  const [deliveryCharges, setDeliveryCharges] = useState<number>(-1);
 
   const firstRender = useRef(true);
 
@@ -52,6 +55,7 @@ export default function Checkout() {
 
     setCartContent(cartData.cart);
     setIntent(cartData.intent);
+    setDeliveryCharges(cartData.deliveryCharges);
 
     // Sync cart if there are any changes
     if (cartData.cart) {
@@ -86,7 +90,7 @@ export default function Checkout() {
   return (
     <>
       <div className="basis-[55%]">
-        {intent && !loading ? (
+        {intent && (
           <Elements
             stripe={stripePromise}
             options={{
@@ -149,16 +153,28 @@ export default function Checkout() {
               ],
             }}
           >
-            <CheckoutForm loading={loading} />
+            <CheckoutForm
+              loading={loading}
+              cartContent={cartContent}
+              deliveryCharges={deliveryCharges}
+            />
           </Elements>
-        ) : (
-          <>Loading...</>
         )}
+        <div
+          className={`h-full flex-row justify-center items-center gap-4 p-10 ${
+            loading ? "flex" : "hidden"
+          }`}
+        >
+          <span>
+            <Loader2 className="animate-spin" />
+          </span>
+          Loading...
+        </div>
       </div>
       <Separator orientation="vertical" className="!w-0.5 bg-primary !h-auto" />
       <div className="basis-[45%]">
         {loading ? (
-          <div className="flex flex-col gap-4 lg:p-10">
+          <div className="lg:flex flex-col gap-4 px-5 lg:p-10 hidden">
             <div className="flex flex-row gap-5">
               <Skeleton className="size-16" />
               <div className="flex-1 flex flex-col justify-center gap-1.5">
@@ -184,80 +200,126 @@ export default function Checkout() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-6 lg:p-10 uppercase">
-            <div className="flex flex-col gap-3">
-              {cartContent.map((item) => (
-                <div
-                  className="flex flex-row gap-4 lg:gap-5"
-                  key={`${item.id}-${item.size.id}`}
-                >
-                  <div className="size-16">
-                    <AspectRatio ratio={1}>
-                      <Image
-                        fill
-                        src={item.image.url}
-                        alt={item.title}
-                        className="object-cover"
-                      />
-                      <Badge className="text-xs font-montserrat bg-[#3288C3] rounded-full absolute top-0 right-0 translate-x-1/4 -translate-y-1/4">
-                        {item.quantity}
-                      </Badge>
-                    </AspectRatio>
-                  </div>
-                  <div className="flex-1 grid grid-cols-4">
-                    <div className="col-span-3 flex flex-col gap-1.5 justify-center flex-1 font-montserrat font-semibold">
-                      <div
-                        className="text-sm leading-3.5 break-all overflow-hidden text-ellipsis"
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                      >
-                        {item.title}
-                      </div>
-                      <div className="text-sm  text-gray-500">
-                        {item.size.title}
-                      </div>
-                    </div>
-                    <span className="text-sm font-semibold leading-4 break-all ml-auto">
-                      ${item.total.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {/* Bill info */}
-            <div className="flex flex-col gap-2">
-              {/* Subtotal */}
-              <div className="flex flex-row justify-between items-center font-semibold">
-                <span>Subtotal · {cartContent.length} items</span>
-                <span>
-                  $
-                  {cartContent
-                    .reduce((acc, item) => acc + item.total, 0)
-                    .toFixed(2)}
-                </span>
-              </div>
-              {/* Shipping */}
-              <div className="flex flex-row justify-between items-center font-semibold">
-                <span>Shipping</span>
-                <span>$1.00</span>
-              </div>
-            </div>
-            {/* Total */}
-            <div className="flex flex-row justify-between items-center font-bold text-lg">
-              <span>Total</span>
-              <span>
-                $
-                {(
-                  cartContent.reduce((acc, item) => acc + item.total, 0) + 1
-                ).toFixed(2)}
-              </span>
-            </div>
-          </div>
+          <OrderSummary
+            cartContent={cartContent}
+            deliveryCharges={deliveryCharges}
+            className="hidden lg:flex"
+            state={true}
+          />
         )}
       </div>
     </>
   );
 }
+
+export const OrderSummary = ({
+  cartContent,
+  deliveryCharges = 0,
+  className,
+  state,
+}: {
+  cartContent: CartContent;
+  deliveryCharges: number;
+  className?: string;
+  state?: boolean;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className={cn("flex flex-col gap-6 px-5 lg:p-10 uppercase", className)}
+    >
+      {typeof state !== "boolean" && (
+        <div className="flex justify-between items-center">
+          <span className="text-xl font-semibold">Order Summary</span>
+          <button
+            onClick={() => {
+              setOpen(!open);
+            }}
+            className="flex items-center font-montserrat font-semibold uppercase text-sm cursor-pointer"
+            type="button"
+          >
+            {open ? (
+              <>
+                hide <ChevronUp className="ml-1" size={18} />
+              </>
+            ) : (
+              <>
+                show <ChevronDown className="ml-1" size={18} />
+              </>
+            )}
+          </button>
+        </div>
+      )}
+      {(state || open) && (
+        <div className="flex flex-col gap-3">
+          {cartContent.map((item) => (
+            <div
+              className="flex flex-row gap-4 lg:gap-5"
+              key={`${item.id}-${item.size.id}`}
+            >
+              <div className="size-16">
+                <AspectRatio ratio={1}>
+                  <Image
+                    fill
+                    src={item.image.url}
+                    alt={item.title}
+                    className="object-cover"
+                  />
+                  <Badge className="text-xs font-montserrat bg-[#3288C3] rounded-full absolute top-0 right-0 translate-x-1/4 -translate-y-1/4">
+                    {item.quantity}
+                  </Badge>
+                </AspectRatio>
+              </div>
+              <div className="flex-1 grid grid-cols-4">
+                <div className="col-span-3 flex flex-col gap-1.5 justify-center flex-1 font-montserrat font-semibold">
+                  <div
+                    className="text-sm leading-3.5 break-all overflow-hidden text-ellipsis"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
+                    {item.title}
+                  </div>
+                  <div className="text-sm  text-gray-500">
+                    {item.size.title}
+                  </div>
+                </div>
+                <span className="text-sm font-semibold leading-4 break-all ml-auto">
+                  ${item.total.toFixed(2)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {/* Bill info */}
+      <div className="flex flex-col gap-2">
+        {/* Subtotal */}
+        <div className="flex flex-row justify-between items-center font-semibold">
+          <span>Subtotal · {cartContent.length} items</span>
+          <span>
+            ${cartContent.reduce((acc, item) => acc + item.total, 0).toFixed(2)}
+          </span>
+        </div>
+        {/* Shipping */}
+        <div className="flex flex-row justify-between items-center font-semibold">
+          <span>Shipping</span>
+          <span>${deliveryCharges.toFixed(2)}</span>
+        </div>
+      </div>
+      {/* Total */}
+      <div className="flex flex-row justify-between items-center font-bold text-lg">
+        <span>Total</span>
+        <span>
+          $
+          {(
+            cartContent.reduce((acc, item) => acc + item.total, 0) +
+            (deliveryCharges < 0 ? 0 : deliveryCharges)
+          ).toFixed(2)}
+        </span>
+      </div>
+    </div>
+  );
+};

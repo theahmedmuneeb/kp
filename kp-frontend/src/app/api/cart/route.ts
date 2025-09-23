@@ -57,7 +57,7 @@ export const POST = async (req: Request) => {
       );
       if (product) {
         const size = product.sizes.find((s) => s.id === item.size);
-        if (!size) throw new Error("Size not found");
+        if (!size || size.stock <= 0) return null;
 
         const sizePrice = size.price ?? product.price;
         const wholesaleRange =
@@ -68,6 +68,8 @@ export const POST = async (req: Request) => {
           ? getWholesalePrice(wholesaleRange, item.quantity) ?? sizePrice
           : sizePrice;
         const quantity = item.quantity > size.stock ? size.stock : item.quantity;
+
+        if (quantity <= 0) return null;
 
         return {
           id: product.id,
@@ -86,9 +88,11 @@ export const POST = async (req: Request) => {
     })
     .filter((i) => i);
 
+  const deliveryCharges = cart.reduce((acc, item) => acc + item!.total, 0) > 200 ? 0 : cart.reduce((acc, item) => acc + item!.quantity, 0) <= 5 ? 12 : 30;
+
   let intent = null;
   if (typeof body.intentId === "string") {
-    intent = await paymentIntent(cart.reduce((acc, item) => acc + item!.total, 0) * 100, body.intentId);
+    intent = await paymentIntent((cart.reduce((acc, item) => acc + item!.total, 0) + deliveryCharges) * 100, body.intentId);
   }
 
   return NextResponse.json({
@@ -97,8 +101,10 @@ export const POST = async (req: Request) => {
       intent: {
         clientSecret: intent.client_secret,
         id: intent.id,
+        amount: intent.amount
       }
-    })
+    }),
+    deliveryCharges
   });
 
 };

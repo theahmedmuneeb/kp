@@ -160,6 +160,11 @@ export interface Globals extends Main {
     mobileNavigation: Link[];
     headerButton: Link;
     footerLinks: Link[];
+    footerBrands: {
+      image: Image;
+      title?: string;
+      href?: string;
+    }[]
     product: {
       sizeChart: Image;
       washInstructions: String | null;

@@ -99,6 +99,14 @@ export interface KpOrderProduct extends Struct.ComponentSchema {
           defaultOptions: 'S\nM\nL\nXL\n2XL\n3XL';
         }
       >;
+    sizeId: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
   };
 }
 

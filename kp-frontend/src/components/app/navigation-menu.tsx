@@ -20,7 +20,7 @@ export function NavigationMenu({ globals }: { globals: Globals }) {
     [key: string]: boolean;
   }>({});
   return (
-    <div className="hidden lg:flex flex-row gap-6 items-center font-extrabold text-2xl text-secondary">
+    <div className="hidden lg:flex flex-row gap-6 items-center font-extrabold text-2xl text-secondary uppercase">
       {globals.data.navigation.map((item, idx) => {
         if ("items" in item) {
           return (
@@ -39,7 +39,7 @@ export function NavigationMenu({ globals }: { globals: Globals }) {
                   setSubmenuOpen({ ...submenuOpen, [idx]: false })
                 }
               >
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1 uppercase">
                   {item.title}
                   <ChevronDown
                     className={`transform transition duration-150 ${
@@ -50,7 +50,7 @@ export function NavigationMenu({ globals }: { globals: Globals }) {
                 </span>
               </PopoverTrigger>
               <PopoverContent
-                className="w-auto px-0 py-2 border-0 shadow-md text-accent font-extrabold text-xl"
+                className="w-auto px-0 py-2 border-0 shadow-md text-accent font-extrabold text-xl uppercase"
                 side="bottom"
                 sideOffset={12}
                 align="center"
@@ -206,7 +206,7 @@ export function MobileNavigationMenu({ globals }: { globals: Globals }) {
       >
         <div className="w-0 h-0 border-x-16 border-b-16 border-transparent border-b-secondary absolute -top-3.5 right-3.5" />
         <ScrollArea className="h-[calc(100dvh-64px)] text-accent">
-          <ul className="flex flex-col justify-center text-center mt-2 text-2xl font-bold">
+          <ul className="flex flex-col justify-center text-center mt-2 text-2xl font-bold uppercase">
             {globals.data.mobileNavigation.map(
               (item, idx) =>
                 item.title && (
@@ -238,7 +238,7 @@ export function MobileNavigationMenu({ globals }: { globals: Globals }) {
               }
               onClick={() => setMobileNavigationMenuOpen(false)}
             >
-              <Button className="w-full !text-2xl !p-4">
+              <Button className="w-full !text-2xl !p-4 uppercase">
                 {globals.data.headerButton.title}
               </Button>
             </Link>

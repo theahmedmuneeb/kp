@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import { cartSchema } from "../cart/route";
-import z, { json, safeParse } from "zod";
+import z, { safeParse } from "zod";
 import axios from "axios";
-import { checkoutFormSchema } from "@/components/app/checkout-form";
 import { CartContent } from "@/types/strapi";
 import { Intent } from "@/lib/fetch";
 import isObjectsEqual from "fast-deep-equal";
 import { api } from "@/utils/api";
 import { stripe } from "@/lib/pay/stripe";
+import countryRegionData from "country-region-data/dist/data-umd";
 
 const schema = z.object({
     ...cartSchema.shape,
@@ -44,9 +44,14 @@ export const POST = async (req: Request) => {
             return new NextResponse(null, { status: 400 });
         }
 
-        const { data: newCartData } = await axios.post<{ cart: CartContent | null, intent: Intent }>(`${process.env.NEXT_PUBLIC_SITE_URL}/api/cart`, {
+        const { data: newCartData } = await axios.post<{ cart: CartContent | null, intent: Intent, deliveryCharges: number }>(`${process.env.NEXT_PUBLIC_SITE_URL}/api/cart`, {
             cart: body.cart,
             intentId: body.intentId
+        }, {
+            headers: {
+                Cookie: req.headers.get("cookie") || "",
+            },
+            withCredentials: true,
         });
 
         if (!newCartData.cart) {
@@ -63,23 +68,33 @@ export const POST = async (req: Request) => {
             return NextResponse.json({ cart: newCart, intent: newCartData.intent }, { status: 409 });
         }
 
+        const country = countryRegionData.find(c => c.countryShortCode === body.meta.country);
+        if (!country) {
+            return new NextResponse(null, { status: 400 });
+        }
+        const region = country.regions.find(r => r.shortCode === body.meta.state);
+        if (!region) {
+            return new NextResponse(null, { status: 400 });
+        }
+
         const orderData = {
             name: body.meta.name,
             email: body.meta.email,
-            country: body.meta.country,
-            state: body.meta.state,
+            country: country.countryName,
+            state: region.name,
             city: body.meta.city,
             zip: body.meta.zip,
             address: body.meta.address,
             amount: newCartData.cart.reduce((acc, item) => acc + item.total, 0),
-            deliveryCharges: 10,
-            amountPaid: 69,
-            info: `Order By ${body.meta.name} - (${body.meta.email})\nAddress: ${body.meta.address}, ${body.meta.city}, ${body.meta.state}, ${body.meta.country} - ${body.meta.zip}\nProducts:\n${newCartData.cart.map((item) => `- ${item.title} (${item.size.title}) x ${item.quantity}`).join("\n")}\nTotal: $${newCartData.cart.reduce((acc, item) => acc + item.total, 0)}\nDelivery Charges: $10\nAmount Paid: $${69}\n`,
+            deliveryCharges: newCartData.deliveryCharges,
+            amountPaid: (newCartData.intent?.amount ?? 0) / 100,
+            info: `Order By ${body.meta.name} - (${body.meta.email})\nAddress: ${body.meta.address}, ${body.meta.city}, ${region.name}, ${country.countryName} - ${body.meta.zip}\nProducts:\n${newCartData.cart.map((item) => `- ${item.title} (${item.size.title}): $${item.price} x ${item.quantity} = $${item.total}`).join("\n")}\nTotal: $${newCartData.cart.reduce((acc, item) => acc + item.total, 0)}\nDelivery Charges: $${newCartData.deliveryCharges}\nAmount Paid: $${(newCartData.intent?.amount ?? 0) / 100}`,
             intent: body.intentId,
             json: JSON.stringify(newCartData.cart),
             items: newCartData.cart.map((item) => ({
                 product: item.id,
                 size: item.size.title,
+                sizeId: item.size.id,
                 quantity: item.quantity,
             }))
         }
@@ -103,7 +118,7 @@ export const POST = async (req: Request) => {
         }
 
         if (existingOrder.data.length === 0) {
-            const { success: newOrderSuccess, data: newOrder } = await api.post<any>('/orders', {
+            const { success: newOrderSuccess, data: newOrder, message } = await api.post<any>('/orders', {
                 data: orderData
             }, {}, process.env.API_WRITE_TOKEN)
 
@@ -120,7 +135,6 @@ export const POST = async (req: Request) => {
 
         return NextResponse.json({ intent });
     } catch (err) {
-        console.log(err)
         return new NextResponse(null, { status: 500 });
     }
 }

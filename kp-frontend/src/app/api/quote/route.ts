@@ -33,12 +33,13 @@ const schema = z
   .omit({ mockupChoice: true });
 
 export const POST = async (req: Request) => {
+
   const db = new Client({
     user: process.env.DATABASE_USERNAME,
     host: process.env.DATABASE_HOST,
     database: process.env.DATABASE_NAME,
     password: process.env.DATABASE_PASSWORD,
-    port: parseInt(String(process.env.DATABASE_PORT), 10) || 5432,
+    port: Number(process.env.DATABASE_PORT) || 5432,
   });
 
   try {

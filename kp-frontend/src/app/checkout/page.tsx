@@ -5,9 +5,8 @@ import CheckoutComponent  from "@/components/app/checkout";
 import { Metadata } from "next";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const globals = await useGlobals();
   return {
-    title: `Checkout | ${globals.data.title}`,
+    title: "Checkout",
     robots: {
       index: false,
       follow: false,
@@ -31,7 +30,7 @@ export default async function Checkout() {
           </Link>
         </div>
       </header>
-      <main className="flex flex-col lg:flex-row min-h-[calc(100vh-62px)] max-w-7xl mx-auto">
+      <main className="flex flex-col lg:flex-row min-h-[calc(100vh-62px)] max-w-7xl mx-auto py-3 lg:py-0">
         <CheckoutComponent />
       </main>
     </>

@@ -1,8 +1,6 @@
 import type { Core } from "@strapi/strapi";
 import { syncProductVariants } from "./utils/syncProductVariants";
 
-const productCache = new Map<number, any>();
-
 export default {
   /**
    * An asynchronous register function that runs before
@@ -35,22 +33,14 @@ export default {
         // Trimming title before updating
         if (event.params.data.title)
           event.params.data.title = event.params.data.title.trim();
-
-        const product = await strapi.db.query("api::product.product").findOne({
-          where: { id: event.params.where.id },
-          populate: { variants: true },
-        });
-
-        productCache.set(event.params.where.id, product);
       },
       async afterCreate(event) {
         // Sync variants after create
-        await syncProductVariants(strapi, event.result, productCache.get(event.params.where.id), syncedProducts);
+        await syncProductVariants(strapi, event.result);
       },
       async afterUpdate(event) {
         // Sync variants after update
-        await syncProductVariants(strapi, event.result, productCache.get(event.params.where.id), syncedProducts);
-        productCache.delete(event.params.where.id);
+        await syncProductVariants(strapi, event.result);
       },
     });
   },
