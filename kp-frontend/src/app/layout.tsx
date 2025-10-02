@@ -1,5 +1,9 @@
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Inter, Montserrat } from "next/font/google";
+import {
+  Inter,
+  Montserrat,
+  Special_Gothic_Expanded_One,
+} from "next/font/google";
 import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/sonner";
@@ -7,17 +11,19 @@ import NextAuthSessionProvider from "@/components/providers/session-provider";
 import type { Metadata } from "next";
 import { useGlobals } from "@/lib/fetch";
 
-const inter = Inter({
+const inter = Special_Gothic_Expanded_One({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400"],
+  // weight: ["400", "500", "600", "700", "800"],
   display: "swap",
   variable: "--font-inter",
   fallback: ["system-ui", "sans-serif"],
 });
 
-const montserrat = Montserrat({
+const montserrat = Special_Gothic_Expanded_One({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
+  // weight: ["400", "500", "600", "700"],
   display: "swap",
   variable: "--font-montserrat",
   fallback: ["system-ui", "sans-serif"],

@@ -28,8 +28,9 @@ export function FeaturedProductSection1({
         </div>
         <div className="lg:w-1/2 flex flex-col justify-center gap-10 md:gap-14">
           {item.heading && (
+            // on Monteserrat lg size 40 px
             <h1
-              className="text-2xl md:text-[40px] leading-7 md:leading-10 font-bold"
+              className="text-2xl md:text-4xl leading-7 md:leading-10 font-bold"
               dangerouslySetInnerHTML={{
                 __html: sanitizeHtml(item.heading),
               }}
@@ -129,12 +130,14 @@ export function FeaturedProductSection2({
         {/* Upper */}
         <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
           <div className="md:w-1/2 py-8 md:py-14 text-end md:text-start">
+          {/* on Montserrat md size 2xl lg size 5xl */}
             <h1
-              className="text-3xl md:text-2xl lg:text-5xl font-bold"
+              className="text-3xl md:text-xl lg:text-[40px] font-bold"
               dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.heading) }}
             />
+            {/* on md size xl */}
             <div
-              className="mt-10 md:mt-14 lg:mt-16 text-xl lg:text-3xl font-montserrat font-medium lg:font-semibold"
+              className="mt-10 md:mt-14 lg:mt-16 text-xl md:text-lg lg:text-3xl font-montserrat font-medium lg:font-semibold"
               dangerouslySetInnerHTML={{
                 __html: marked.parse(item.description, {
                   breaks: true,

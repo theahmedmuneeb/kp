@@ -16,33 +16,35 @@ export default async function Footer() {
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-extrabold mb-5">
               BRANDS BY KP
             </h1>
-            {globals.data.footerBrands.map((brand, idx) => (
-              <div key={idx} className="w-fit flex flex-col items-center">
-                {brand.title && brand.title.startsWith("[T]") && (
+            <div className="flex flex-col flex-wrap content-start">
+              {globals.data.footerBrands.map((brand, idx) => (
+                <div key={idx} className="self-stretch flex flex-col items-center">
+                  {brand.title && brand.title.startsWith("[T]") && (
+                    <Link href={brand.href || "#"}>
+                      <span className="font-montserrat font-semibold text-sm">
+                        {brand.title.replace(/^\[T\]/, "")}
+                      </span>
+                    </Link>
+                  )}
                   <Link href={brand.href || "#"}>
-                    <span className="font-montserrat font-semibold text-sm md:text-lg">
-                      {brand.title.replace(/^\[T\]/, "")}
-                    </span>
+                    <Image
+                      className="object-contain !size-20 md:!size-24"
+                      src={brand.image.url}
+                      alt={brand.title || "Brand Logo"}
+                      width={96}
+                      height={96}
+                    />
                   </Link>
-                )}
-                <Link href={brand.href || "#"}>
-                  <Image
-                    className="object-contain !size-20 md:!size-24"
-                    src={brand.image.url}
-                    alt={brand.title || "Brand Logo"}
-                    width={96}
-                    height={96}
-                  />
-                </Link>
-                {brand.title && !brand.title.startsWith("[T]") && (
-                  <Link href={brand.href || "#"}>
-                    <span className="font-montserrat font-semibold text-sm md:text-lg">
-                      {brand.title}
-                    </span>
-                  </Link>
-                )}
-              </div>
-            ))}
+                  {brand.title && !brand.title.startsWith("[T]") && (
+                    <Link href={brand.href || "#"}>
+                      <span className="font-montserrat font-semibold text-sm">
+                        {brand.title}
+                      </span>
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
         <div className="md:w-1/2">

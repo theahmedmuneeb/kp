@@ -11,7 +11,8 @@ export default async function ProductInfo({ product }: { product: Product }) {
   return (
     <div className="mt-2 lg:mt-14">
       {/* Product title */}
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold uppercase">
+      {/* On lg text size 5xl */}
+      <h1 className="text-3xl md:text-4xl lg:text-[40px] font-bold uppercase">
         {product.title}
       </h1>
       {/* Price & Add to Cart */}

@@ -33,8 +33,6 @@ export default function Checkout() {
   const [cartContent, setCartContent] = useState<CartContent>([]);
   const [deliveryCharges, setDeliveryCharges] = useState<number>(-1);
 
-  const firstRender = useRef(true);
-
   const { cart, setCart } = useCartStore();
   const { intent, setIntent } = useCheckoutStore();
 
@@ -49,7 +47,7 @@ export default function Checkout() {
     const cartData = await getCart(cart, intent?.id || "");
     if (!cartData.cart || !Array.isArray(cartData.cart)) {
       toast.error("Something went wrong. Please try again.");
-      router.replace("/");
+      router.push("/");
       return;
     }
 
@@ -76,11 +74,8 @@ export default function Checkout() {
   };
 
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    if (cart && cart.length > 0) {
+    if (!cart) return;
+    if (cart.length > 0) {
       loadCart();
     } else {
       router.push("/");
@@ -103,7 +98,8 @@ export default function Checkout() {
                   colorPrimary: "#6A341A",
                   colorBackground: "#E4E4E4",
                   colorDanger: "#e7000b",
-                  fontFamily: '"Montserrat", sans-serif',
+                  fontFamily: '"Special Gothic Expanded One", sans-serif',
+                  // fontFamily: '"Montserrat", sans-serif',
                 },
                 rules: {
                   ".Block": {
@@ -148,7 +144,8 @@ export default function Checkout() {
               fonts: [
                 {
                   cssSrc:
-                    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap",
+                    // "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap",
+                    "https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap"
                 },
               ],
             }}

@@ -18,16 +18,19 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
 
   const { setSelectedSize: zSetSelectedSize } = useProductStore();
 
-  const { cart, addToCart } = useCartStore();
+  const { cart = [], addToCart } = useCartStore();
 
   useEffect(() => {
     zSetSelectedSize(selectedSize);
+  }, [selectedSize]);
+
+  useEffect(() => {
     setQuantity(
       cart
         .find((i) => i.id === product.id && i.size === selectedSize)
         ?.quantity.toString() || "1"
     );
-  }, [selectedSize, cart]);
+  }, [cart, product.id, selectedSize]);
 
   const handleAddToCart = async () => {
     if (selectedSize < 1) return;
@@ -60,9 +63,6 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
         });
         toast.success("Item added to your cart");
       }
-
-      
-
     } catch (err) {
       toast.error("Failed to add to cart");
     } finally {

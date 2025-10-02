@@ -8,7 +8,7 @@ export type CartItem = {
 };
 
 type CartState = {
-  cart: CartItem[];
+  cart: CartItem[] | undefined;
 
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number, size: number) => void;
@@ -19,26 +19,26 @@ type CartState = {
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
-      cart: [],
+      cart: undefined,
       addToCart: (item) =>
         set((state) => {
-          const existing = state.cart.find(
+          const existing = state.cart?.find(
             (p) => p.id === item.id && p.size === item.size
           );
           let newCart;
           if (existing) {
-            newCart = state.cart.map((p) =>
+            newCart = state.cart?.map((p) =>
               p.id === item.id && p.size === item.size ? item : p
             );
           } else {
-            newCart = [...state.cart, item];
+            newCart = [...(state.cart || []), item];
           }
           return { cart: newCart };
         }),
 
       removeFromCart: (id, size) =>
         set((state) => ({
-          cart: state.cart.filter((p) => !(p.id === id && p.size === size)),
+          cart: state.cart?.filter((p) => !(p.id === id && p.size === size)),
         })),
 
       clearCart: () => set({ cart: [] }),

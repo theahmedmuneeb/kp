@@ -31,7 +31,7 @@ export const getUser = async (req?: Request): Promise<User | null> => {
   return null;
 };
 
-export const getCart = async (raw: CartItem[], intentId?: string): Promise<{ cart: CartContent | null, intent: Intent, deliveryCharges: number }> => {
+export const getCart = async (raw: CartItem[] | undefined, intentId?: string): Promise<{ cart: CartContent | null, intent: Intent, deliveryCharges: number }> => {
   if (!raw || raw.length === 0) return { cart: [], intent: undefined, deliveryCharges: -1 };
   try {
     const res = await axios.post<{ cart: CartContent | null, intent: Intent, deliveryCharges: number }>("/api/cart", {
