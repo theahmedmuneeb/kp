@@ -25,12 +25,24 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
   }, [selectedSize]);
 
   useEffect(() => {
-    setQuantity(
-      cart
-        .find((i) => i.id === product.id && i.size === selectedSize)
-        ?.quantity.toString() || "1"
+    const cartItem = cart.find(
+      (i) => i.id === product.id && i.size === selectedSize
     );
-  }, [cart, product.id, selectedSize]);
+
+    if (cartItem) {
+      setQuantity(cartItem.quantity.toString());
+    }
+  }, [cart, selectedSize]);
+
+  useEffect(() => {
+    const cartItem = cart.find(
+      (i) => i.id === product.id && i.size === selectedSize
+    );
+
+    if (!cartItem) {
+      setQuantity("1");
+    }
+  }, [selectedSize]);
 
   const handleAddToCart = async () => {
     if (selectedSize < 1) return;
@@ -85,7 +97,7 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
       </span>
       {/* Size selection */}
       <div
-        className={`flex flex-wrap gap-3 md:gap-4 mt-4 md:mt-7 select-none ${
+        className={`flex flex-wrap gap-2 md:gap-3 lg:gap-4 mt-4 md:mt-7 select-none ${
           adding ? "pointer-events-none" : ""
         }`}
       >
@@ -94,7 +106,7 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
             <button
               disabled={size.stock === 0}
               key={idx}
-              className={`h-11 w-14  flex justify-center items-center p-2 border-4 border-secondary text-xl  font-bold uppercase cursor-pointer hover:bg-secondary/20 disabled:bg-secondary/20 disabled:text-secondary/80 disabled:border-secondary/80 disabled:cursor-not-allowed transition duration-100 relative ${
+              className={`h-11 w-14 flex justify-center items-center p-2 border-4 border-secondary text-lg  font-bold uppercase cursor-pointer hover:bg-secondary/20 disabled:bg-secondary/20 disabled:text-secondary/80 disabled:border-secondary/80 disabled:cursor-not-allowed transition duration-100 relative ${
                 size.id === selectedSize ? "!bg-secondary text-accent" : ""
               }`}
               onClick={() => setSelectedSize(size.id)}
@@ -111,11 +123,11 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
       {/* Add to cart */}
       {product.sizes.some((size) => size.stock > 0) && (
         <div
-          className={`flex flex-row mt-7 gap-5 ${
+          className={`flex flex-row mt-7 gap-3 md:gap-5 ${
             adding ? "opacity-90 pointer-events-none" : ""
           }`}
         >
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-1.5">
             <Button
               disabled={adding}
               className="border-4 border-secondary h-full size-10 hover:bg-secondary/20"
@@ -139,6 +151,7 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
               }}
             />
             <Button
+              type="button"
               disabled={adding}
               className="border-4 border-secondary size-10 hover:bg-secondary/20"
               variant="ghost"
@@ -152,7 +165,7 @@ export default function ProductSelectAdd({ product }: { product: Product }) {
           </div>
           <Button
             disabled={adding}
-            className="text-accent uppercase h-10"
+            className="text-accent uppercase h-10 text-base"
             onClick={handleAddToCart}
           >
             {adding && (
