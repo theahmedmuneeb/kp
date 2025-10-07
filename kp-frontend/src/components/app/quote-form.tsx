@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Controller, FieldError, FieldErrors, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,7 +36,6 @@ type QuoteForm = z.infer<typeof QuoteFormSchema>;
 
 export default function QuoteForm() {
   const [colors, setColors] = useState<string[]>([]);
-  const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const {
@@ -112,7 +111,7 @@ export default function QuoteForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onError)}
-      className={`grid grid-cols-1 lg:grid-cols-2 gap-4 font-montserrat px-4 md:px-5 lg:px-8 ${
+      className={`grid grid-cols-1 lg:grid-cols-2 gap-4 font-montserrat px-4 md:px-5 lg:px-8 text-sm ${
         submitting ? "pointer-events-none !select-none opacity-60" : ""
       }`}
     >
@@ -224,7 +223,7 @@ export default function QuoteForm() {
           editable
           addOnPaste
         >
-          <TagsInputLabel className="flex items-center text-base font-semibold">
+          <TagsInputLabel className="flex items-center text-sm font-semibold">
             Colors in design (up to 6):
             <Tooltip>
               <TooltipTrigger

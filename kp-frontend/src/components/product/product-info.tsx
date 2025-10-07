@@ -23,7 +23,7 @@ export default async function ProductInfo({ product }: { product: Product }) {
           <h3 className="text-2xl lg:text-3xl font-bold uppercase mt-6">
             Other colorways
           </h3>
-          <div className="grid grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5 lg:gap-7 mt-4">
+          <div className="grid grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 lg:gap-7 mt-4">
             {product.variants.map((variant, idx) => (
               <div key={idx}>
                 <AspectRatio ratio={1}>
@@ -36,7 +36,7 @@ export default async function ProductInfo({ product }: { product: Product }) {
                     />
                   </Link>
                 </AspectRatio>
-                <h2 className="font-montserrat font-semibold text-sm lg:text-base text-center uppercase mt-0.5">
+                <h2 className="font-montserrat font-semibold text-sm text-center uppercase mt-0.5">
                   <Link href={`/product/${variant.slug}`}>
                     {variant.titleAsVariant || variant.title}
                   </Link>

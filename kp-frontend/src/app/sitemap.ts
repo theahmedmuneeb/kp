@@ -2,6 +2,8 @@ import { Main } from '@/types/strapi'
 import { api } from '@/utils/api'
 import type { MetadataRoute } from 'next'
 
+export const dynamic = 'force-dynamic';
+
 async function getProducts(): Promise<{ slug: string, updatedAt: string }[]> {
     const { success, data: productsData } = await api.get<Main & { data: { slug: string, updatedAt: string }[] }>('/products?pagination[pageSize]=100000&fields=slug&fields=updatedAt')
 

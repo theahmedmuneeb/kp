@@ -34,10 +34,9 @@ export default async function Quote() {
       <div className="flex lg:w-1/2 bg-background">
         <div className="flex flex-col gap-5 lg:gap-10 w-full max-w-2xl mx-auto px-5 py-8 lg:p-16 xl:px-20 xl:py-28">
           <h1
-            className="text-3xl md:text-4xl xl:text-[40px] font-extrabold leading-7.5 md:leading-9 xl:leading-10"
+            className="text-2xl md:text-4xl lg:text-3xl xl:text-4xl font-extrabold leading-7.5 md:leading-9 xl:leading-10"
             dangerouslySetInnerHTML={{ __html: page.data.heading }}
           />
-
           <span className="font-montserrat font-semibold text-base md:text-lg leading-4 md:leading-5">
             {page.data.content}
           </span>
