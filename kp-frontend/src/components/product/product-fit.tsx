@@ -53,11 +53,10 @@ export function ProductFitItem({
                 <AspectRatio ratio={1}>
                   <Image
                     fill
-                    // src={item.image.formats.medium.url || item.image.url}
-                    src="https://storage.kp.ahmedmuneeb.com/medium_5001bfb908f1461cac22595a535c00a1_1_9b60d42b24.webp"
+                    src={item.image.formats.medium.url || item.image.url}
                     alt={
-                      //   item.image.alternativeText ||
-                      //   item.title ||
+                        item.image.alternativeText ||
+                        item.size ||
                       "Model Image"
                     }
                     className="object-cover"
