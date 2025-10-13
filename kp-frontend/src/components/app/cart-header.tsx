@@ -249,7 +249,10 @@ export default function CartHeader() {
                           </div>
                         </div>
                         <div className="col-span-3 text-sm leading-3.5 font-semibold font-montserrat m-auto break-all">
-                          ${item.total}
+                          $
+                          {Number.isInteger(item.total)
+                            ? item.total
+                            : item.total.toFixed(2)}
                         </div>
                         {/* Remove Button */}
                         <button
@@ -270,7 +273,14 @@ export default function CartHeader() {
               <div className="pl-1">
                 <span className="block text-xl font-bold uppercase">Total</span>
                 <span className="block text-lg font-montserrat font-semibold">
-                  $ {cartContent.reduce((i, j) => i + (j?.total || 0), 0)}
+                  $
+                  {(() => {
+                    const total = cartContent.reduce(
+                      (i, j) => i + (j?.total || 0),
+                      0
+                    );
+                    return Number.isInteger(total) ? total : total.toFixed(2);
+                  })()}
                 </span>
               </div>
               <div className="flex flex-col justify-center items-end">

@@ -62,6 +62,11 @@
       "repeatable": false,
       "required": true
     },
+    "fit": {
+      "type": "component",
+      "component": "kp.product-fit",
+      "repeatable": true
+    },
     "slug": {
       "type": "uid",
       "targetField": "title",

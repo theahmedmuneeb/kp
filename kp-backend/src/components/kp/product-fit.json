@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_kp_product_fits",
+  "info": {
+    "displayName": "Product Fit"
+  },
+  "options": {},
+  "attributes": {
+    "model": {
+      "type": "string",
+      "required": true
+    },
+    "items": {
+      "type": "component",
+      "component": "kp.product-fit-item",
+      "repeatable": true,
+      "required": true,
+      "min": 1
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_kp_product_fit_items",
+  "info": {
+    "displayName": "Product Fit Item"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "size": {
+      "type": "customField",
+      "customField": "plugin::combobox.combobox",
+      "options": {
+        "defaultOptions": "S\nM\nL\nXL\n2XL\n3XL",
+        "customValidation": "/^.+$/"
+      }
+    }
+  },
+  "config": {}
+}

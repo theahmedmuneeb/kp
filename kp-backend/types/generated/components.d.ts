@@ -145,6 +145,42 @@ export interface KpProductDefaults extends Struct.ComponentSchema {
   };
 }
 
+export interface KpProductFit extends Struct.ComponentSchema {
+  collectionName: 'components_kp_product_fits';
+  info: {
+    displayName: 'Product Fit';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'kp.product-fit-item', true> &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    model: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface KpProductFitItem extends Struct.ComponentSchema {
+  collectionName: 'components_kp_product_fit_items';
+  info: {
+    displayName: 'Product Fit Item';
+  };
+  attributes: {
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    size: Schema.Attribute.String &
+      Schema.Attribute.CustomField<
+        'plugin::combobox.combobox',
+        {
+          customValidation: '/^.+$/';
+          defaultOptions: 'S\nM\nL\nXL\n2XL\n3XL';
+        }
+      >;
+  };
+}
+
 export interface KpProductSizes extends Struct.ComponentSchema {
   collectionName: 'components_kp_product_sizes';
   info: {
@@ -319,6 +355,8 @@ declare module '@strapi/strapi' {
       'kp.order-product': KpOrderProduct;
       'kp.pilicy': KpPilicy;
       'kp.product-defaults': KpProductDefaults;
+      'kp.product-fit': KpProductFit;
+      'kp.product-fit-item': KpProductFitItem;
       'kp.product-sizes': KpProductSizes;
       'kp.product-variants': KpProductVariants;
       'kp.service-item': KpServiceItem;

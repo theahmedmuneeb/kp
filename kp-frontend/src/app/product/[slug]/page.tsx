@@ -8,11 +8,12 @@ import ProductMeidaGallery from "@/components/product/product-media-gallery";
 import ProductInfo from "@/components/product/product-info";
 import { unstable_cache } from "next/cache";
 import { Metadata } from "next";
+import ProductFit from "@/components/product/product-fit";
 
 // Fetch product
 async function fetchProduct(slug: string): Promise<ProductType | null> {
   const { success, data: productsData } = await api.get<ProductPage>(
-    `/products?filters[slug][$eq]=${slug}&limit=1&populate=images&populate=sizes&populate=sizes.wholesale&populate=variants&populate=variants.images&populate=wholesale&populate=additional&populate=additional.sizeChart&populate=seo.openGraph`
+    `/products?filters[slug][$eq]=${slug}&limit=1&populate=images&populate=sizes&populate=sizes.wholesale&populate=variants&populate=variants.images&populate=wholesale&populate=additional&populate=additional.sizeChart&populate=seo.openGraph&populate=fit.items.image`
   );
 
   if (!success || !productsData.data || !Array.isArray(productsData.data)) {
@@ -137,6 +138,8 @@ export default async function Product({
             <ProductInfo product={product} />
           </div>
         </div>
+        {/* Product Fit section */}
+        <ProductFit fit={product.fit} />
       </main>
       <Footer />
     </>

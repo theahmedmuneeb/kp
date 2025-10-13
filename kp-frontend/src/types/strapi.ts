@@ -65,6 +65,14 @@ export type ProductSize = Base & {
   wholesale: ProductWholesalePrice[];
 };
 
+export type ProductFit = {
+  model: string;
+  items: {
+    image: Image;
+    size: string;
+  }[];
+}
+
 export type ProductBase = {
   slug: string;
   title: string;
@@ -79,6 +87,7 @@ export type Product = ProductBase & {
   variants: ProductBase[];
   wholesale: ProductWholesalePrice[];
   additional: ProductAdditionalOptions;
+  fit: ProductFit[] | null;
   seo: Seo;
 };
 
