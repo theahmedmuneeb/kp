@@ -14,7 +14,7 @@ import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 
 export default function ProductFit({ fit }: { fit: _ProductFit[] | null }) {
   return (
-    fit && (
+    fit && fit.length > 0 && (
       <div className="max-w-7xl mx-auto px-4 lg:px-5 py-8 lg:py-12 space-y-5">
         <h1 className="text-3xl md:text-4xl font-extrabold text-center pb-2">
           HOW IT FITS
