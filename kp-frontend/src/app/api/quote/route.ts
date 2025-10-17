@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import { Client, QueryResult } from "pg";
 import { nanoid } from "nanoid";
-import { customAlphabet } from "nanoid";
-import bucket from "@/utils/s3";
 import { QuoteFormSchema } from "@/schema/quote-form";
 import z from "zod";
 import { api } from "@/utils/api";
@@ -33,14 +30,6 @@ const schema = z
   .omit({ mockupChoice: true });
 
 export const POST = async (req: Request) => {
-
-  const db = new Client({
-    user: process.env.DATABASE_USERNAME,
-    host: process.env.DATABASE_HOST,
-    database: process.env.DATABASE_NAME,
-    password: process.env.DATABASE_PASSWORD,
-    port: Number(process.env.DATABASE_PORT) || 5432,
-  });
 
   try {
     const formData = await req.formData();
@@ -73,49 +62,42 @@ export const POST = async (req: Request) => {
       );
     }
 
-    const hash = `quote-assets/${nanoid(48)}`;
     const mockupFile = formData.get("mockup") as File | null;
-    let fileName = "";
+    let mockupId: number | null = null;
 
-    let mockup: QueryResult<any> = { rows: [{ id: null }] } as QueryResult<any>;
+    // Uploading File
     if (mockupFile) {
-      // Upload mockup file to S3
-      fileName = `${hash}.${mockupFile.name.split(".").pop()}`;
-      await bucket.upload(mockupFile, fileName);
-      // Add file to the database
-      await db.connect();
-      const now = new Date();
-      mockup = await db.query(
-        `INSERT INTO files(document_id, name, hash, ext, mime, size, url, provider, folder_path, created_at, updated_at, published_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      RETURNING id`,
-        [
-          customAlphabet(
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-            24
-          )(),
-          mockupFile ? mockupFile.name : "",
-          hash,
-          fileName.split(".").pop() ? `.${fileName.split(".").pop()}` : "",
-          mockupFile ? mockupFile.type : "",
-          mockupFile ? mockupFile.size / 1024 : null,
-          `${process.env.S3_PUBLIC_URL}/${fileName}`,
-          "aws-s3",
-          "/2",
-          now,
-          now,
-          now,
-        ]
-      );
+      const file = new FormData();
+      file.append("files", mockupFile);
+
+      console.log(file)
+
+      const { success, data, message } = await api.post<[{ id: number }]>('/upload', file, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+      }, process.env.API_WRITE_TOKEN);
+
+      if (!success || !data || !data[0]?.id) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: message || "Failed to upload file",
+          },
+          { status: 500 }
+        );
+      }
+      mockupId = data[0].id;
     }
 
-    // Insert quote data into the Strapi
-    const { success, message } = await api.post(
+    // Insert quote into the Strapi
+    const { success } = await api.post(
       "/quotes",
       {
         data: {
           ...data,
           colors: data.colors.join(", "),
-          mockup: mockupFile && mockup.rows[0].id ? mockup.rows[0].id : null,
+          mockup: mockupFile && mockupId,
         },
       },
       {},
@@ -126,7 +108,7 @@ export const POST = async (req: Request) => {
       return NextResponse.json(
         {
           success: false,
-          message: message || "Failed to submit form",
+          message: "Failed to submit form",
         },
         { status: 500 }
       );
@@ -141,7 +123,5 @@ export const POST = async (req: Request) => {
       success: false,
       message: "Something went wrong",
     });
-  } finally {
-    await db.end();
   }
 };

@@ -42,7 +42,7 @@ export const api = {
     request<T>("get", path, config, token),
   post: <T>(
     path: string,
-    data: {},
+    data: File | {},
     config?: AxiosRequestConfig<any>,
     token?: string
   ) => request<T>("post", path, { data, ...config }, token),

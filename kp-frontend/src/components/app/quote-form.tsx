@@ -45,6 +45,7 @@ export default function QuoteForm() {
     setValue,
     watch,
     setError,
+    reset,
     formState: { errors },
   } = useForm<QuoteForm>({
     defaultValues: {
@@ -60,7 +61,12 @@ export default function QuoteForm() {
     Object.entries(data).forEach(([key, value]) => {
       if (key === "mockupChoice") {
         // Nothing
-      } else if (key === "mockup" && Array.isArray(value) && value.length > 0 && watch('mockupChoice')) {
+      } else if (
+        key === "mockup" &&
+        Array.isArray(value) &&
+        value.length > 0 &&
+        watch("mockupChoice")
+      ) {
         formData.append(key, value[0]);
       } else if (Array.isArray(value)) {
         value.forEach((v) => formData.append(key, v));
@@ -78,7 +84,8 @@ export default function QuoteForm() {
         toast.error(quote.message || "Failed to submit form");
         return;
       }
-
+      reset();
+      setColors([]);
       toast.success("Form submitted successfully!");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -233,7 +240,9 @@ export default function QuoteForm() {
                 <RiInformation2Fill className="size-5 lg:size-4" />
               </TooltipTrigger>
               <TooltipContent className="max-w-3xs px-2 font-semibold font-montserrat uppercase">
-                <p>Add a color by typing and pressing Enter, or by using a comma.</p>
+                <p>
+                  Add a color by typing and pressing Enter, or by using a comma.
+                </p>
               </TooltipContent>
             </Tooltip>
           </TagsInputLabel>
